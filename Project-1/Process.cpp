@@ -1,28 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include "Process.h"
 using namespace std;
 
-class Process {
+vector<Process> processes;
 
-    public:
+Process::Process() {};
 
-        string testString;
-
-        int id;
-        int memory;
-        int scheduling_information;
-        int accounting_information;
-        string process_state;
-        string other_resources;
-
-        Process* parent;
-        Process* children[];
-
-        //open files?
-
-        Process() {}
-
-        void loadFromLine(string line) {
-            testString = line;
-        }
-};
+void Process::loadFromLine(string line) {
+    Process::testString = line;
+}

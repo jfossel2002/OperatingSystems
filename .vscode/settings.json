@@ -2,6 +2,10 @@
     "files.associations": {
         "fstream": "cpp",
         "iostream": "cpp",
-        "istream": "cpp"
+        "istream": "cpp",
+        "vector": "cpp",
+        "string": "cpp",
+        "filesystem": "cpp",
+        "iosfwd": "cpp"
     }
 }
