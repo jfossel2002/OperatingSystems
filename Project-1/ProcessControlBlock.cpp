@@ -1,20 +1,27 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+
+#include"Process.cpp"
 using namespace std;
 
 class ProcessControlBlock {
+    public:
+        vector<Process> processes;
 
-    int id;
-    int memory;
-    int scheduling_information;
-    int accounting_information;
-    string process_state;
-    string other_resources;
+        void readFromFile(string path) {
+            string lineText;
+            ifstream datafileIfstream(path);
+            while (getline(datafileIfstream, lineText)) {
+                Process newProcess;
+                newProcess.loadFromLine(lineText);
+                processes.insert(processes.end() + 1, newProcess);
+            }
+        }
 
-    // pointers will be needed for parent and child processes, open files, class?
-
-    void readFromFile(string path) {
-        ifstream datafileIfstream(path);
-
-    }
+        void printProcesses() {
+            for (int i = 0; i < processes.size(); i++) {
+                cout << processes[i].testString << "\n";
+            };
+        }
 };

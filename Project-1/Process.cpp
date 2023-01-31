@@ -4,17 +4,25 @@ using namespace std;
 
 class Process {
 
-    int id;
-    int memory;
-    int scheduling_information;
-    int accounting_information;
-    string process_state;
-    string other_resources;
+    public:
 
-    // pointers will be needed for parent and child processes, open files, class?
+        string testString;
 
-    void readFromFile(string path) {
-        ifstream datafileIfstream(path);
+        int id;
+        int memory;
+        int scheduling_information;
+        int accounting_information;
+        string process_state;
+        string other_resources;
 
-    }
+        Process* parent;
+        Process* children[];
+
+        //open files?
+
+        Process() {}
+
+        void loadFromLine(string line) {
+            testString = line;
+        }
 };
