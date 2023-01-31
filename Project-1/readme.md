@@ -1,4 +1,1 @@
-No Scott
-Hello Scott
-A third message
-Some new message
+This is Project 1 for OS
