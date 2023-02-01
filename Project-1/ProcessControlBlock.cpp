@@ -1,20 +1,24 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include "Process.h"
+#include "ProcessControlBlock.h"
 using namespace std;
 
-class ProcessControlBlock {
+ProcessControlBlock::ProcessControlBlock() {};
 
-    int id;
-    int memory;
-    int scheduling_information;
-    int accounting_information;
-    string process_state;
-    string other_resources;
-
-    // pointers will be needed for parent and child processes, open files, class?
-
-    void readFromFile(string path) {
-        ifstream datafileIfstream(path);
-
+void ProcessControlBlock::readFromFile(string path) {
+    string lineText;
+    ifstream datafileIfstream(path);
+    while (getline(datafileIfstream, lineText)) {
+        Process newProcess;
+        newProcess.loadFromLine(lineText);
+        processes.insert(processes.end() + 1, newProcess);
     }
-};
+}
+
+void ProcessControlBlock::printProcesses() {
+    for (int i = 0; i < processes.size(); i++) {
+        cout << processes[i].testString << "\n";
+    };
+}
