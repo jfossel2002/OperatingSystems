@@ -5,7 +5,9 @@
 #include "ProcessControlBlock.h"
 using namespace std;
 
-ProcessControlBlock::ProcessControlBlock() {};
+ProcessControlBlock::ProcessControlBlock() {
+
+}
 
 void ProcessControlBlock::readFromFile(string path) {
     string lineText;
@@ -20,5 +22,5 @@ void ProcessControlBlock::readFromFile(string path) {
 void ProcessControlBlock::printProcesses() {
     for (int i = 0; i < processes.size(); i++) {
         cout << processes[i].testString << "\n";
-    };
+    }
 }
