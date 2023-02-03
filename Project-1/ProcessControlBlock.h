@@ -1,15 +1,11 @@
-#ifndef PROCESSCONTROLBLOCK_H
-#define PROCESSCONTROLBLOCK_H
-
+using namespace std;
 #include "Process.h"
 #include <vector>
-using namespace std;
 
-class ProcessControlBlock {
-    public:
+class ProcessControlBlock
+{
+public:
     vector<Process> processes;
-    ProcessControlBlock();
     void readFromFile(string path);
     void printProcesses();
 };
-#endif
