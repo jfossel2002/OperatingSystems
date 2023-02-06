@@ -10,7 +10,7 @@ int main()
     cout << "Please enter the file path to the file you would like to use\n\n";
     string path;
     cin >> path;
-    cout << path;
+    // cout << path;
 
     ProcessControlBlock PCB;
     PCB.readFromFile(path);

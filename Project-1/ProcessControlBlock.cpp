@@ -27,6 +27,7 @@ void ProcessControlBlock::printProcesses() // Prints all entries in proccesses v
 {
     for (int i = 0; i < processes.size(); i++)
     {
-        cout << processes[i].testString << "\n";
+        // cout << processes[i].fullString << "\n";
+        processes[i].to_string();
     }
 }
