@@ -5,6 +5,7 @@ using namespace std;
 class ProcessControlBlock
 {
 public:
+    string name;
     vector<Process> processes;
     void readFromFile(string path);
     void printProcesses();
