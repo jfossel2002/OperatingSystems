@@ -33,9 +33,9 @@ void Process::loadFromLine(string line)
     getline(ss, s, ' ');
     process_state = s;
     getline(ss, s, ' ');
-    parent = s;
+    parent = stoi(s);
     getline(ss, s, ' ');
-    children = s;
+    children = stoi(s);
     getline(ss, s, ' ');
     open_files = s;
     getline(ss, s, ' ');
