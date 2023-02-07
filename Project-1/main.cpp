@@ -17,6 +17,7 @@ void loadPCBFromFile();
 void loadDataToPCBFromFile();
 void createNewPCB();
 void printPCB();
+int searchForPCB(string name);
 vector<ProcessControlBlock> PCBs;
 
 void runMainMenu()
@@ -104,20 +105,17 @@ void loadDataToPCBFromFile()
     cout << "Please enter name of PCB to load to\n\n";
     string name;
     cin >> name;
-    for (int i = 0; i < PCBs.size(); i++)
+    int PCBIndex = searchForPCB(name);
+    if (PCBIndex == -1)
     {
-        if (PCBs[i].name == name)
-        {
-            bool AddedData = PCBs[i].readFromFile(path);
-            if (AddedData)
-            {
-                cout << "Added Data to PCB" << name << "\n\n";
-            }
-            return;
-        }
+        cout << "No PCB found with name: " << name << "\n\n";
+        return;
     }
-    cout << "No PCB found with name: " << name << "\n\n";
-    return;
+    bool AddedData = PCBs[PCBIndex].readFromFile(path);
+    if (AddedData)
+    {
+        cout << "Added Data to PCB" << name << "\n\n";
+    }
 }
 
 // Creates a new PCB from a user input name and adds to the PCB vector
@@ -127,6 +125,12 @@ void createNewPCB()
     cout << "Please enter name of PCB\n\n";
     string name;
     cin >> name;
+    int PCBIndex = searchForPCB(name);
+    if (PCBIndex != -1)
+    {
+        cout << "PCB already found with name: " << name << "\n\n";
+        return;
+    }
     PCB.name = name;
     PCBs.push_back(PCB);
     return;
@@ -138,16 +142,27 @@ void printPCB()
     cout << "Please enter name of PCB to view processes\n\n";
     string name;
     cin >> name;
+    int PCBIndex = searchForPCB(name);
+    if (PCBIndex == -1)
+    {
+        cout << "No PCB found with name: " << name << "\n\n";
+        return;
+    }
+    PCBs[PCBIndex].printProcesses();
+    return;
+}
+
+int searchForPCB(string name)
+{
     for (int i = 0; i < PCBs.size(); i++)
     {
         if (PCBs[i].name == name)
         {
             PCBs[i].printProcesses();
-            return;
+            return i;
         }
     }
-    cout << "No PCB found with name: " << name << "\n\n";
-    return;
+    return -1;
 }
 
 int main()
