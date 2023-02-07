@@ -87,6 +87,26 @@ void returnOrQuit()
     }
 }
 
+ int PCBIndexSelect() {
+    listPCBs();
+    cout << "\nPlease select one of the following PCBs by entering it's corresponding number...\n";
+    string rawUserInput;
+    cin >> rawUserInput;
+    int userInput = stoi(rawUserInput);
+    if (userInput <= PCBs.size() && userInput >= 0)
+    {
+        int PCBIndex = userInput - 1;
+        cout << PCBs[PCBIndex].name << " has been selected\n";
+        return userInput - 1;
+    }
+    else
+    {
+        cout << "Invalid input\n press enter to retry";
+        cin;
+        return PCBIndexSelect();
+    }
+}
+
 void listPCBs()
 {
     system("clear");
@@ -99,22 +119,15 @@ void listPCBs()
 // Asks users for a file path and a PCB to load to, if both are found then the data is loaded into the PCB
 void loadDataToPCBFromFile()
 {
+    int PCBIndex = PCBIndexSelect();
     cout << "Please enter the file path to the file you would like to use\n\n";
     string path;
     cin >> path;
-    cout << "Please enter name of PCB to load to\n\n";
-    string name;
-    cin >> name;
-    int PCBIndex = searchForPCB(name);
-    if (PCBIndex == -1)
-    {
-        cout << "No PCB found with name: " << name << "\n\n";
-        return;
-    }
+
     bool AddedData = PCBs[PCBIndex].readFromFile(path);
     if (AddedData)
     {
-        cout << "Added Data to PCB" << name << "\n\n";
+        cout << "Added Data to PCB" << PCBs[PCBIndex].name << "\n\n";
     }
 }
 
@@ -139,15 +152,8 @@ void createNewPCB()
 // Prints the processes in a PCB
 void printPCB()
 {
-    cout << "Please enter name of PCB to view processes\n\n";
-    string name;
-    cin >> name;
-    int PCBIndex = searchForPCB(name);
-    if (PCBIndex == -1)
-    {
-        cout << "No PCB found with name: " << name << "\n\n";
-        return;
-    }
+    int PCBIndex = PCBIndexSelect();
+    system("clear");
     PCBs[PCBIndex].printProcesses();
     return;
 }
