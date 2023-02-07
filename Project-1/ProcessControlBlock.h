@@ -7,6 +7,6 @@ class ProcessControlBlock
 public:
     string name;
     vector<Process> processes;
-    void readFromFile(string path);
+    bool readFromFile(string path);
     void printProcesses();
 };
