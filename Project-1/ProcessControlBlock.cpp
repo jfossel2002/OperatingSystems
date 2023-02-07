@@ -31,8 +31,16 @@ bool ProcessControlBlock::readFromFile(string path)
 
 void ProcessControlBlock::printProcesses() // Prints all entries in proccesses vector
 {
-    for (int i = 0; i < processes.size(); i++)
+    cout << name << "\n\n";
+    if (processes.size() == 0)
     {
+        cout << "there are currently no processes in this PCB";
+    }
+    else
+    {
+        for (int i = 0; i < processes.size(); i++)
+        {
         processes[i].to_string();
+        }
     }
 }
