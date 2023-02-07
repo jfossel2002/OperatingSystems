@@ -10,70 +10,83 @@ using namespace std;
 // use system("clear") to clear the screen at the beginning of your method an make things look nice
 // system("clear") works on mac but might not on pc idk
 
-void listPCBs(vector<ProcessControlBlock> PCBs);
-void returnOrQuit(vector<ProcessControlBlock> PCBs);
-void runMainMenu(vector<ProcessControlBlock> PCBs);
+void listPCBs();
+void returnOrQuit();
+void runMainMenu();
+void loadPCBFromFile();
+void loadDataToPCBFromFile();
+void createNewPCB();
+void printPCB();
+vector<ProcessControlBlock> PCBs;
 
-void runMainMenu(vector<ProcessControlBlock> PCBs)
+void runMainMenu()
 {
-    //offers all the options for functionality of the program to the user
+    // offers all the options for functionality of the program to the user
     system("clear");
     string rawUserInput;
     cout << "Please choose an option by entering the corresponding number...\n 1. view each PCB\n 2. view the processes in a specific PCB\n"
-    << " 3. load processes to a PCB from a text file\n 4. enter a process in the terminal to a PCB\n"
-    <<" 5. create a new PCB\n 6. quit\n\n";
+         << " 3. load processes to a PCB from a text file\n 4. enter a process in the terminal to a PCB\n"
+         << " 5. create a new PCB\n 6. quit\n\n";
     cin >> rawUserInput;
     int userInput = stoi(rawUserInput);
 
-    switch (userInput) {
-        case 1:
-            listPCBs(PCBs);
-            returnOrQuit(PCBs);
-            break;
-        case 2:
+    switch (userInput)
+    {
+    case 1:
+        listPCBs();
+        returnOrQuit();
+        break;
+    case 2:
+        printPCB();
+        returnOrQuit();
+        break;
+    case 3:
+        loadDataToPCBFromFile();
+        returnOrQuit();
+        break;
+    case 4:
 
-        case 3:
+    case 5:
+        createNewPCB();
+        returnOrQuit();
+        break;
+    case 6:
+        cout << "exiting program...";
+        exit(0);
+        break;
 
-        case 4:
-
-        case 5:
-
-        case 6:
-            cout << "exiting program...";
-            exit(0);
-            break;
-        
-        default:
-            cout << "please enter a number corresponding to the given options!\n press enter to continue";
-            cin;
-            runMainMenu(PCBs);
-            break;
+    default:
+        cout << "please enter a number corresponding to the given options!\n press enter to continue";
+        cin;
+        runMainMenu();
+        break;
     }
 }
 
-void returnOrQuit(vector<ProcessControlBlock> PCBs)
+void returnOrQuit()
 {
     cout << "\n\n";
     string rawUserInput;
     cout << "Would you like to...\n 1. return to the main menu\n 2. quit\n\n";
     cin >> rawUserInput;
     int userInput = stoi(rawUserInput);
-    switch (userInput) {
-        case 1:
-            runMainMenu(PCBs);
-            break;
-        case 2:
-            cout << "exiting program...";
-            exit(0);
-            break;
-        default:
-            cout << "invalid input, please enter a 1 or a 2";
-            returnOrQuit(PCBs);
-            break;
+    switch (userInput)
+    {
+    case 1:
+        runMainMenu();
+        break;
+    case 2:
+        cout << "exiting program...";
+        exit(0);
+        break;
+    default:
+        cout << "invalid input, please enter a 1 or a 2";
+        returnOrQuit();
+        break;
     }
 }
 
-void listPCBs(vector<ProcessControlBlock> PCBs)
+void listPCBs()
 {
     system("clear");
     for (int i = 0; i < PCBs.size(); i++)
@@ -82,10 +95,63 @@ void listPCBs(vector<ProcessControlBlock> PCBs)
     }
 }
 
+// Asks users for a file path and a PCB to load to, if both are found then the data is loaded into the PCB
+void loadDataToPCBFromFile()
+{
+    cout << "Please enter the file path to the file you would like to use\n\n";
+    string path;
+    cin >> path;
+    cout << "Please enter name of PCB to load to\n\n";
+    string name;
+    cin >> name;
+    for (int i = 0; i < PCBs.size(); i++)
+    {
+        if (PCBs[i].name == name)
+        {
+            bool AddedData = PCBs[i].readFromFile(path);
+            if (AddedData)
+            {
+                cout << "Added Data to PCB" << name << "\n\n";
+            }
+            return;
+        }
+    }
+    cout << "No PCB found with name: " << name << "\n\n";
+    return;
+}
+
+// Creates a new PCB from a user input name and adds to the PCB vector
+void createNewPCB()
+{
+    ProcessControlBlock PCB;
+    cout << "Please enter name of PCB\n\n";
+    string name;
+    cin >> name;
+    PCB.name = name;
+    PCBs.push_back(PCB);
+    return;
+}
+
+// Prints the processes in a PCB
+void printPCB()
+{
+    cout << "Please enter name of PCB to view processes\n\n";
+    string name;
+    cin >> name;
+    for (int i = 0; i < PCBs.size(); i++)
+    {
+        if (PCBs[i].name == name)
+        {
+            PCBs[i].printProcesses();
+            return;
+        }
+    }
+    cout << "No PCB found with name: " << name << "\n\n";
+    return;
+}
+
 int main()
 {
-    vector<ProcessControlBlock> PCBs;
-
     // the following PCBs are for testing purposes
 
     ProcessControlBlock PCB69420;
@@ -93,22 +159,10 @@ int main()
     ProcessControlBlock FossyFussy;
     FossyFussy.name = "FossyFussy";
 
-    PCBs.push_back(PCB69420); 
+    PCBs.push_back(PCB69420);
     PCBs.push_back(FossyFussy);
 
-    runMainMenu(PCBs);
-
-    /*
-    cout << "Please enter the file path to the file you would like to use\n\n";
-    string path;
-    cin >> path;
-    // cout << path;
-
-    ProcessControlBlock PCB;
-    PCB.readFromFile(path);
-    PCB.printProcesses();
-    */
+    runMainMenu();
 
     return 0;
 };
-
