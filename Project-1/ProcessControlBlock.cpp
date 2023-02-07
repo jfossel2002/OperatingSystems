@@ -6,7 +6,7 @@
 #include "ProcessControlBlock.h"
 using namespace std;
 
-void ProcessControlBlock::readFromFile(string path)
+bool ProcessControlBlock::readFromFile(string path)
 {
     string lineText;
     fstream newfile;
@@ -20,6 +20,12 @@ void ProcessControlBlock::readFromFile(string path)
             processes.push_back(newProcess);   // Push new proccess onto end of proccess vector
         }
         newfile.close(); // close the file object.
+        return true;
+    }
+    else
+    {
+        cout << "File does not exist";
+        return false;
     }
 }
 
@@ -27,7 +33,6 @@ void ProcessControlBlock::printProcesses() // Prints all entries in proccesses v
 {
     for (int i = 0; i < processes.size(); i++)
     {
-        // cout << processes[i].fullString << "\n";
         processes[i].to_string();
     }
 }
