@@ -2,8 +2,9 @@
 #include <fstream>
 #include <vector>
 #include <stdlib.h>
-#include "Process.h"
+
 #include "ProcessControlBlock.h"
+
 using namespace std;
 
 // declare methods here with no body to avoid undeclared identifier error

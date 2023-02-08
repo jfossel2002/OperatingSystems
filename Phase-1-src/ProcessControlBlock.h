@@ -1,14 +1,14 @@
-#ifndef PROCESS_H
-#define PROCESS_H
-
-#include <iostream>
-#include <fstream>
+#include <vector>
 
 using namespace std;
 
-class Process
+class ProcessControlBlock
 {
 public:
+    string name;
+    void invalid_input(string input_name, string input_value);
+    void printProcesses();
+
     string fullString;
 
     int id;
@@ -23,9 +23,5 @@ public:
     int parent;
     int children;
 
-    Process();
-    void loadFromLine(string line);
-    void to_string();
+    bool loadFromLine(string line);
 };
-
-#endif
