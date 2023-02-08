@@ -83,7 +83,7 @@ void listPCBs()
     system("clear");
     for (int i = 0; i < PCBs.size(); i++)
     {
-        cout << i + 1 << ". id:" << PCBs[i].name << "\n";
+        cout << i + 1 << ". ID: " << PCBs[i].name << "\n";
     }
 }
 
@@ -122,10 +122,12 @@ void createNewPCBFromFile()
     if (newfile.is_open())
     { // checking whether the file is open
         while (getline(newfile, lineText))
-        {                               // read data from file object and put it into string.
-            ProcessControlBlock PCB;    // Create new PCB
-            PCB.loadFromLine(lineText); // Put line of text file into new proccess
-            PCBs.push_back(PCB);        // Push new proccess onto end of proccess vector
+        {                            // read data from file object and put it into string.
+            ProcessControlBlock PCB; // Create new PCB
+            if (PCB.loadFromLine(lineText))
+            {                        // Put line of text file into new proccess
+                PCBs.push_back(PCB); // Push new proccess onto end of proccess vector
+            }
         }
         newfile.close(); // close the file object.
     }
