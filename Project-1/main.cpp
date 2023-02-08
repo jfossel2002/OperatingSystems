@@ -87,12 +87,25 @@ void returnOrQuit()
     }
 }
 
- int PCBIndexSelect() {
+int PCBIndexSelect()
+{
     listPCBs();
     cout << "\nPlease select one of the following PCBs by entering it's corresponding number...\n";
     string rawUserInput;
     cin >> rawUserInput;
-    int userInput = stoi(rawUserInput);
+    int userInput;
+    try
+    {
+        userInput = stoi(rawUserInput);
+    }
+    catch (...)
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        return PCBIndexSelect();
+    }
     if (userInput <= PCBs.size() && userInput >= 0)
     {
         int PCBIndex = userInput - 1;
@@ -101,8 +114,12 @@ void returnOrQuit()
     }
     else
     {
-        cout << "Invalid input\n press enter to retry";
-        cin;
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        ;
+
         return PCBIndexSelect();
     }
 }

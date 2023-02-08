@@ -40,7 +40,7 @@ void ProcessControlBlock::printProcesses() // Prints all entries in proccesses v
     {
         for (int i = 0; i < processes.size(); i++)
         {
-        processes[i].to_string();
+            processes[i].to_string();
         }
     }
 }
