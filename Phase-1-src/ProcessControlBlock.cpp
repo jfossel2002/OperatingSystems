@@ -2,12 +2,13 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include "Process.h"
-#include "ProcessControlBlock.h"
 #include <sstream>
 #include <string>
 
+#include "ProcessControlBlock.h"
+
 using namespace std;
+
 void ProcessControlBlock::printProcesses() // Prints all entries in proccesses vector
 {
     cout << "ID: " << id << "\n";
