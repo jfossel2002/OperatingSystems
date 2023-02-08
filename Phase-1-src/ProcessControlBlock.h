@@ -6,7 +6,7 @@ class ProcessControlBlock
 {
 public:
     string name;
-    bool readFromFile(string path);
+    void invalid_input(string input_name, string input_value);
     void printProcesses();
 
     string fullString;
@@ -23,7 +23,5 @@ public:
     int parent;
     int children;
 
-    void loadFromLine(string line);
-    void to_string();
-    void loadFromLine();
+    bool loadFromLine(string line);
 };
