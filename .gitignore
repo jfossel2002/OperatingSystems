@@ -1,1 +1,6 @@
-Project-1/main.cpp
+.vscode/
+Project-1/*.gch
+Project-1/*.o
+Project-1/*.out
+**/.DS_Store
+.vscode/settings.json
