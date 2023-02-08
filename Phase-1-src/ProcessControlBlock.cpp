@@ -2,14 +2,12 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include "ProcessControlBlock.h"
 #include <sstream>
 #include <string>
 
-#include "ProcessControlBlock.h"
-
 using namespace std;
-
-void ProcessControlBlock::printProcesses() // Prints all entries in proccesses vector
+void ProcessControlBlock::printProcesses() // Prints the procces stored in the PCB
 {
     cout << "ID: " << id << "\n";
     cout << "cpu_state: " << cpu_state << "\n";
@@ -28,31 +26,95 @@ Takes in the entire process line and splits it into each of the 10 required comp
 For example: 1 0 2000 1 0 "new" NULL NULL NULL "NONE"
 Is split into Id: 0, cpu_state: 0, memory: 2000, scheduling_information: 1, accounting_information: 0
 proccess_state = "new", parent: NULL, children: NULL, open_files: NULL, other_resources: "NONE"
+Handles invalid inputs
 */
-void ProcessControlBlock::loadFromLine(string line)
+bool ProcessControlBlock::loadFromLine(string line)
 {
     ProcessControlBlock::fullString = line;
     stringstream ss(fullString);
     string s;
-    getline(ss, s, ' ');
-    name = s;
-    id = stoi(s);
-    getline(ss, s, ' ');
-    cpu_state = stoi(s);
-    getline(ss, s, ' ');
-    memory = stoi(s);
-    getline(ss, s, ' ');
-    scheduling_information = stoi(s);
-    getline(ss, s, ' ');
-    accounting_information = stoi(s);
+    try
+    {
+        getline(ss, s, ' ');
+        name = s;
+        id = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("id", s);
+        return false;
+    }
+    try
+    {
+        getline(ss, s, ' ');
+        cpu_state = stoi(s);
+        return false;
+    }
+    catch (...)
+    {
+        invalid_input("cpu_state", s);
+        return false;
+    }
+    try
+    {
+        getline(ss, s, ' ');
+        memory = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("memory", s);
+        return false;
+    }
+    try
+    {
+        getline(ss, s, ' ');
+        scheduling_information = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("scheduling_information", s);
+        return false;
+    }
+    try
+    {
+        getline(ss, s, ' ');
+        accounting_information = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("accounting_information", s);
+        return false;
+    }
     getline(ss, s, ' ');
     process_state = s;
-    getline(ss, s, ' ');
-    parent = stoi(s);
-    getline(ss, s, ' ');
-    children = stoi(s);
+    try
+    {
+        getline(ss, s, ' ');
+        parent = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("parent", s);
+        return false;
+    }
+    try
+    {
+        getline(ss, s, ' ');
+        children = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("children", s);
+        return false;
+    }
     getline(ss, s, ' ');
     open_files = s;
     getline(ss, s, ' ');
     other_resources = s;
+    return true;
+}
+
+void ProcessControlBlock::invalid_input(string input_name, string input_value)
+{
+    cout << "The " << input_name << ": " << input_value << " is not a valid " << input_name << " please verify your input is an interger and within range.\nYhe PCB has not been created.";
 }
