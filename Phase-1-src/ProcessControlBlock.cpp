@@ -48,7 +48,6 @@ bool ProcessControlBlock::loadFromLine(string line)
     {
         getline(ss, s, ' ');
         cpu_state = stoi(s);
-        return false;
     }
     catch (...)
     {
