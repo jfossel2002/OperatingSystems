@@ -5,6 +5,8 @@
 #include "ProcessControlBlock.h"
 #include <sstream>
 #include <string>
+#include <map>
+#include <any>
 
 using namespace std;
 void ProcessControlBlock::printProcesses() // Prints the procces stored in the PCB
@@ -116,4 +118,71 @@ bool ProcessControlBlock::loadFromLine(string line)
 void ProcessControlBlock::invalid_input(string input_name, string input_value)
 {
     cout << "The " << input_name << ": " << input_value << " is not a valid " << input_name << " please verify your input is an interger and within range.\nYhe PCB has not been created.";
+}
+
+bool ProcessControlBlock::edit_process(int index, string newValue)
+{
+    string options[10] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    try
+    {
+        switch (index)
+        {
+        case 1:
+            cout << "Old value of id: " << id << "\nNew value of id: " << newValue << "\n";
+            id = stoi(newValue);
+            name = newValue;
+            break;
+        case 2:
+            cout << "Old value of cpu_state: " << cpu_state << "\nNew value of cpu_state: " << newValue << "\n";
+            cpu_state = stoi(newValue);
+            break;
+        case 3:
+            cout << "Old value of memory: " << memory << "\nNew value of memory: " << newValue << "\n";
+            memory = stoi(newValue);
+            break;
+        case 4:
+            cout << "Old value of scheduling_information: " << scheduling_information << "\nNew value of scheduling_information: " << newValue << "\n";
+            scheduling_information = stoi(newValue);
+            break;
+        case 5:
+            cout << "Old value of accounting_information: " << accounting_information << "\nNew value of accounting_information: " << newValue << "\n";
+            accounting_information = stoi(newValue);
+            break;
+        case 6:
+            cout << "Old value of process_state: " << process_state << "\nNew value of process_state: " << newValue << "\n";
+            process_state = newValue;
+            break;
+        case 7:
+            cout << "Old value of parent: " << parent << "\nNew value of parent: " << newValue << "\n";
+            parent = stoi(newValue);
+            break;
+        case 8:
+            cout << "Old value of children: " << children << "\nNew value of children: " << newValue << "\n";
+            children = stoi(newValue);
+            break;
+        case 9:
+            cout << "Old value of open_files: " << open_files << "\nNew value of open_files: " << newValue << "\n";
+            open_files = newValue;
+            break;
+        case 10:
+            cout << "Old value of other_resources: " << open_files << "\nNew value of other_resources: " << newValue << "\n";
+            open_files = newValue;
+            break;
+        default:
+            cout << "please enter a number corresponding to the given options!\npress enter to continue" << endl;
+            cin.ignore(10, '\n');
+            cin.get();
+            edit_process(index, newValue);
+            break;
+        }
+    }
+    catch (...)
+    {
+        cout << "Invalid input value\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        return false;
+    }
+    return true;
 }

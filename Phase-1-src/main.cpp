@@ -5,6 +5,7 @@
 #include <cctype>
 #include <string>
 #include <sstream>
+#include <stdexcept>
 
 #include "ProcessControlBlock.h"
 
@@ -23,6 +24,7 @@ void printPCB();
 int searchForPCB(string name);
 int PCBIndexSelect();
 void editPCB();
+void editProcessData(int PCBIndex);
 vector<ProcessControlBlock> PCBs;
 
 void runMainMenu()
@@ -68,6 +70,8 @@ void runMainMenu()
         break;
     case 5:
         editPCB();
+        returnOrQuit();
+        break;
     case 6:
         cout << "exiting program...";
         exit(0);
@@ -184,8 +188,67 @@ void createNewPCB()
     return;
 }
 
+// Case 5, edit data in a PCB
 void editPCB()
 {
+    int PCBIndex = PCBIndexSelect();
+    system("clear");
+    editProcessData(PCBIndex);
+    return;
+}
+
+// Case 5, edit data in a PCB
+// Handles all logic
+void editProcessData(int PCBIndex)
+{
+    string options[11] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "quit"};
+    system("clear");
+    cout << "Please select which attribute of the process you want to change, input the index\n";
+    for (int i = 0; i < 11; i++)
+    {
+        cout << i + 1 << ". " << options[i] << "\n";
+    }
+    string rawUserInput;
+    cin >> rawUserInput;
+    int userInput;
+    string newValue;
+    try
+    {
+        userInput = stoi(rawUserInput);
+        if (userInput < 0 or userInput > 11)
+        {
+            throw invalid_argument("");
+        }
+    }
+    catch (...)
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        editProcessData(PCBIndex);
+    }
+    cout << "Please input what you want to change it to: ";
+    cin >> newValue;
+    if (userInput == 1)
+    {
+        if (searchForPCB(newValue) != -1)
+        {
+            cout << "PCB with ID: " << newValue << " already exists\npress enter to retry";
+            cin.ignore(10, '\n');
+            cin.get();
+            editProcessData(PCBIndex);
+            return;
+        }
+    }
+    if (PCBs[PCBIndex].edit_process(userInput, newValue))
+    {
+        cout << "Value sucesfully changed";
+    }
+    else
+    {
+        editProcessData(PCBIndex);
+    }
     return;
 }
 // Helper to allows user to select a PCB by id
