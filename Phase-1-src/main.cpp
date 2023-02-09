@@ -201,10 +201,10 @@ void editPCB()
 // Handles all logic
 void editProcessData(int PCBIndex)
 {
-    string options[11] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "quit"};
+    string options[10] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
     system("clear");
     cout << "Please select which attribute of the process you want to change, input the index\n";
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < 10; i++)
     {
         cout << i + 1 << ". " << options[i] << "\n";
     }
@@ -215,7 +215,7 @@ void editProcessData(int PCBIndex)
     try
     {
         userInput = stoi(rawUserInput);
-        if (userInput < 0 or userInput > 11)
+        if (userInput < 0 or userInput > 10)
         {
             throw invalid_argument("");
         }
