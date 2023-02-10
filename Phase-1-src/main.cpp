@@ -48,6 +48,7 @@ void runMainMenu()
         cin.ignore(10, '\n');
         cin.get();
         runMainMenu();
+        return;
     }
 
     switch (userInput)
@@ -227,6 +228,7 @@ void editProcessData(int PCBIndex)
         cin.ignore(10, '\n');
         cin.get();
         editProcessData(PCBIndex);
+        return;
     }
     cout << "Please input what you want to change it to: ";
     cin >> newValue;
@@ -308,6 +310,7 @@ void returnOrQuit()
         cin.ignore(10, '\n');
         cin.get();
         returnOrQuit();
+        return;
     }
     switch (userInput)
     {
