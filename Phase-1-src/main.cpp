@@ -2,6 +2,10 @@
 #include <fstream>
 #include <vector>
 #include <stdlib.h>
+#include <cctype>
+#include <string>
+#include <sstream>
+#include <stdexcept>
 
 #include "ProcessControlBlock.h"
 
@@ -14,12 +18,13 @@ using namespace std;
 void listPCBs();
 void returnOrQuit();
 void runMainMenu();
-void loadPCBFromFile();
 void createNewPCBFromFile();
 void createNewPCB();
 void printPCB();
 int searchForPCB(string name);
 int PCBIndexSelect();
+void editPCB();
+void editProcessData(int PCBIndex);
 vector<ProcessControlBlock> PCBs;
 
 void runMainMenu()
@@ -29,7 +34,7 @@ void runMainMenu()
     string rawUserInput;
     cout << "Please choose an option by entering the corresponding number...\n 1. View each PCB\n 2. View the process in a specific PCB\n"
          << " 3. Load  a process to a PCB from a text file\n 4. Create a new PCB with process in the terminal\n"
-         << " 5. quit\n\n";
+         << " 5. Edit Data in PCB\n 6. Quit\n\n";
     cin >> rawUserInput;
     int userInput;
     try
@@ -43,6 +48,7 @@ void runMainMenu()
         cin.ignore(10, '\n');
         cin.get();
         runMainMenu();
+        return;
     }
 
     switch (userInput)
@@ -64,6 +70,10 @@ void runMainMenu()
         returnOrQuit();
         break;
     case 5:
+        editPCB();
+        returnOrQuit();
+        break;
+    case 6:
         cout << "exiting program...";
         exit(0);
         break;
@@ -98,13 +108,13 @@ void printPCB()
     return;
 }
 
+// Helper to search the PCBs for a PCB by name/id return it's index if found, else returns -1
 int searchForPCB(string name)
 {
     for (int i = 0; i < PCBs.size(); i++)
     {
         if (PCBs[i].name == name)
         {
-            PCBs[i].printProcesses();
             return i;
         }
     }
@@ -123,11 +133,21 @@ void createNewPCBFromFile()
     if (newfile.is_open())
     { // checking whether the file is open
         while (getline(newfile, lineText))
-        {                            // read data from file object and put it into string.
-            ProcessControlBlock PCB; // Create new PCB
-            if (PCB.loadFromLine(lineText))
-            {                        // Put line of text file into new proccess
-                PCBs.push_back(PCB); // Push new proccess onto end of proccess vector
+        { // read data from file object and put it into string.
+            stringstream ss(lineText);
+            string id;
+            getline(ss, id, ' ');
+            if (searchForPCB(id) != -1)
+            {
+                cout << "PCB already exists with ID: " << id << " this PCB has been skipped, please fix input and try again\n";
+            }
+            else
+            {
+                ProcessControlBlock PCB; // Create new PCB
+                if (PCB.loadFromLine(lineText))
+                {                        // Put line of text file into new proccess
+                    PCBs.push_back(PCB); // Push new proccess onto end of proccess vector
+                }
             }
         }
         newfile.close(); // close the file object.
@@ -142,20 +162,97 @@ void createNewPCBFromFile()
 // CASE 4
 void createNewPCB()
 {
-    /*cout << "Please enter id of PCB\n\n";
-    string name;
-    cin >> name;
-    int PCBIndex = searchForPCB(name);
-    if (PCBIndex != -1)
+    string arr[9] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    string input_line;
+    string temp;
+    cout << "Input the id: ";
+    getline(cin, temp);
+    getline(cin, temp); // We need two of these idk why but without it, it breaks
+    temp.erase(remove_if(temp.begin(), temp.end(), ::isspace), temp.end());
+    if (searchForPCB(temp) != -1)
     {
-        cout << "PCB already found with id: " << name << "\n\n";
-        return;
+        cout << "PCB already exists with this ID please try again\n";
+        createNewPCB();
     }
-    ProcessControlBlock PCB(name);
-    PCBs.push_back(PCB);*/
+    input_line += temp + " ";
+    for (string name : arr)
+    {
+        cout << "Input the " << name << ": ";
+        getline(cin, temp);
+        temp.erase(remove_if(temp.begin(), temp.end(), ::isspace), temp.end());
+        input_line += temp + " ";
+    }
+    cout << input_line;
+    ProcessControlBlock PCB;
+    PCB.loadFromLine(input_line);
+    PCBs.push_back(PCB);
     return;
 }
 
+// Case 5, edit data in a PCB
+void editPCB()
+{
+    int PCBIndex = PCBIndexSelect();
+    system("clear");
+    editProcessData(PCBIndex);
+    return;
+}
+
+// Case 5, edit data in a PCB
+// Handles all logic
+void editProcessData(int PCBIndex)
+{
+    string options[10] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    system("clear");
+    cout << "Please select which attribute of the process you want to change, input the index\n";
+    for (int i = 0; i < 10; i++)
+    {
+        cout << i + 1 << ". " << options[i] << "\n";
+    }
+    string rawUserInput;
+    cin >> rawUserInput;
+    int userInput;
+    string newValue;
+    try
+    {
+        userInput = stoi(rawUserInput);
+        if (userInput < 0 or userInput > 10)
+        {
+            throw invalid_argument("");
+        }
+    }
+    catch (...)
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        editProcessData(PCBIndex);
+        return;
+    }
+    cout << "Please input what you want to change it to: ";
+    cin >> newValue;
+    if (userInput == 1)
+    {
+        if (searchForPCB(newValue) != -1)
+        {
+            cout << "PCB with ID: " << newValue << " already exists\npress enter to retry";
+            cin.ignore(10, '\n');
+            cin.get();
+            editProcessData(PCBIndex);
+            return;
+        }
+    }
+    if (PCBs[PCBIndex].edit_process(userInput, newValue))
+    {
+        cout << "Value sucesfully changed";
+    }
+    else
+    {
+        editProcessData(PCBIndex);
+    }
+    return;
+}
 // Helper to allows user to select a PCB by id
 int PCBIndexSelect()
 {
@@ -201,7 +298,20 @@ void returnOrQuit()
     string rawUserInput;
     cout << "Would you like to...\n 1. return to the main menu\n 2. quit\n\n";
     cin >> rawUserInput;
-    int userInput = stoi(rawUserInput);
+    int userInput;
+    try
+    {
+        userInput = stoi(rawUserInput);
+    }
+    catch (...)
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        returnOrQuit();
+        return;
+    }
     switch (userInput)
     {
     case 1:
@@ -222,13 +332,13 @@ int main()
 {
     // the following PCBs are for testing purposes
 
-    ProcessControlBlock PCB69420;
-    PCB69420.name = "PCB69420";
-    ProcessControlBlock FossyFussy;
-    FossyFussy.name = "FossyFussy";
+    ProcessControlBlock PCB_TEST_1;
+    PCB_TEST_1.name = "PCB1";
+    ProcessControlBlock PCB_TEST_2;
+    PCB_TEST_2.name = "PCB2";
 
-    PCBs.push_back(PCB69420);
-    PCBs.push_back(FossyFussy);
+    PCBs.push_back(PCB_TEST_1);
+    PCBs.push_back(PCB_TEST_2);
 
     runMainMenu();
 

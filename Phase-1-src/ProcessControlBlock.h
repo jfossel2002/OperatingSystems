@@ -9,6 +9,7 @@ public:
     string name;
     void invalid_input(string input_name, string input_value);
     void printProcesses();
+    bool edit_process(int index, string newValue);
 
     string fullString;
 
