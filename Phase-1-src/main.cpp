@@ -162,7 +162,7 @@ void createNewPCBFromFile()
 // CASE 4
 void createNewPCB()
 {
-    string arr[9] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    string arr[11] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources","arrival_time","cpu_req"};
     string input_line;
     string temp;
     cout << "Input the id: ";
@@ -202,10 +202,10 @@ void editPCB()
 // Handles all logic
 void editProcessData(int PCBIndex)
 {
-    string options[10] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    string options[12] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources","arrival_time","cpu_req"};
     system("clear");
     cout << "Please select which attribute of the process you want to change, input the index\n";
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 12; i++)
     {
         cout << i + 1 << ". " << options[i] << "\n";
     }
@@ -216,7 +216,7 @@ void editProcessData(int PCBIndex)
     try
     {
         userInput = stoi(rawUserInput);
-        if (userInput < 0 or userInput > 10)
+        if (userInput < 0 or userInput > 12)
         {
             throw invalid_argument("");
         }
