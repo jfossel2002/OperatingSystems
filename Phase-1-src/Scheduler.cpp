@@ -1,9 +1,10 @@
 #include <vector>
 #include <string>
-#include "Scheduler.h"
 #include <algorithm>
 #include <numeric>
 #include <iostream>
+#include "Scheduler.h"
+
 
 using namespace std;
 
@@ -29,18 +30,19 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock>sorted_PCBs)
 void Scheduler::FCFS(vector<ProcessControlBlock>PCBs)
 {
      
+    // sort in ascending order of arrival time 
     sort(PCBs.begin(), PCBs.end(),
-    [](ProcessControlBlock * a, ProcessControlBlock * b){return b->arrival_time > a->arrival_time;}); 
+    [](ProcessControlBlock &a, ProcessControlBlock &b){return a.arrival_time < b.arrival_time;}); 
 
     makeSchedule(PCBs);
-    
 }
 
 void Scheduler::SJF(vector<ProcessControlBlock>PCBs)
 {
 
+    //sort in ascending order of job length 
     sort(PCBs.begin(), PCBs.end(),
-    [](ProcessControlBlock * a, ProcessControlBlock * b){return b->cpu_req > a->cpu_req;});
+    [](ProcessControlBlock &a, ProcessControlBlock &b){return a.cpu_req < b.cpu_req;});
 
     makeSchedule(PCBs);
 }
