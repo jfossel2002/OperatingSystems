@@ -6,8 +6,9 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
-
+#include <algorithm>
 #include "ProcessControlBlock.h"
+#include "Scheduler.h"
 
 using namespace std;
 
@@ -330,17 +331,24 @@ void returnOrQuit()
 
 int main()
 {
+    Scheduler sched;
     // the following PCBs are for testing purposes
 
     ProcessControlBlock PCB_TEST_1;
     PCB_TEST_1.name = "PCB1";
+    PCB_TEST_1.arrival_time=1;
+    PCB_TEST_1.cpu_req=3;
     ProcessControlBlock PCB_TEST_2;
     PCB_TEST_2.name = "PCB2";
+    PCB_TEST_2.arrival_time =2;
+    PCB_TEST_2.cpu_req=2;
+    
+
 
     PCBs.push_back(PCB_TEST_1);
     PCBs.push_back(PCB_TEST_2);
 
-    runMainMenu();
-
+    //runMainMenu();
+    sched.FCFS(PCBs); 
     return 0;
 };
