@@ -5,4 +5,7 @@ Project-1/*.o
 Project-1/*.out
 **/.DS_Store
 .vscode/settings.json
+Phase-1/*.gch
+Phase-1/*.o
+Phase-1/*.out
 

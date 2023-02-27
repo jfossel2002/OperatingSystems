@@ -112,6 +112,27 @@ bool ProcessControlBlock::loadFromLine(string line)
     open_files = s;
     getline(ss, s, ' ');
     other_resources = s;
+    try
+    {
+        getline(ss, s, ' ');
+        arrival_time = stoi(s); 
+    }
+    catch(...)
+    {
+        invalid_input("arrival_time", s);
+        return false;
+    }
+    try
+    {
+        getline(ss, s, ' ');
+        cpu_req = stoi(s); 
+    }
+    catch(...)
+    {
+        invalid_input("cpu_req", s);
+        return false;
+    }
+    
     return true;
 }
 

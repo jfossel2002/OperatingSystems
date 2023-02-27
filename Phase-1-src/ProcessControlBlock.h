@@ -21,6 +21,8 @@ public:
     string process_state;
     string other_resources;
     string open_files; // TODO Change type
+    int arrival_time;
+    int cpu_req;
 
     int parent;
     int children;

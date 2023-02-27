@@ -6,8 +6,8 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
-
-#include "ProcessControlBlock.h"
+#include <algorithm>
+#include "Scheduler.h"
 
 using namespace std;
 
@@ -162,7 +162,7 @@ void createNewPCBFromFile()
 // CASE 4
 void createNewPCB()
 {
-    string arr[9] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    string arr[11] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources","arrival_time","cpu_req"};
     string input_line;
     string temp;
     cout << "Input the id: ";
@@ -202,10 +202,10 @@ void editPCB()
 // Handles all logic
 void editProcessData(int PCBIndex)
 {
-    string options[10] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    string options[12] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources","arrival_time","cpu_req"};
     system("clear");
     cout << "Please select which attribute of the process you want to change, input the index\n";
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 12; i++)
     {
         cout << i + 1 << ". " << options[i] << "\n";
     }
@@ -216,7 +216,7 @@ void editProcessData(int PCBIndex)
     try
     {
         userInput = stoi(rawUserInput);
-        if (userInput < 0 or userInput > 10)
+        if (userInput < 0 or userInput > 12)
         {
             throw invalid_argument("");
         }
@@ -285,7 +285,7 @@ int PCBIndexSelect()
              << endl;
         cin.ignore(10, '\n');
         cin.get();
-        ;
+        
 
         return PCBIndexSelect();
     }
@@ -330,17 +330,34 @@ void returnOrQuit()
 
 int main()
 {
+    Scheduler sched;
     // the following PCBs are for testing purposes
 
     ProcessControlBlock PCB_TEST_1;
     PCB_TEST_1.name = "PCB1";
+    PCB_TEST_1.id = 1;
+    PCB_TEST_1.arrival_time=1;
+    PCB_TEST_1.cpu_req=3;
+
     ProcessControlBlock PCB_TEST_2;
     PCB_TEST_2.name = "PCB2";
+    PCB_TEST_2.id = 2;
+    PCB_TEST_2.arrival_time =4;
+    PCB_TEST_2.cpu_req=2;
+    
+    ProcessControlBlock PCB_TEST_3;
+    PCB_TEST_3.name = "PCB3";
+    PCB_TEST_3.id = 3;
+    PCB_TEST_3.arrival_time =3;
+    PCB_TEST_3.cpu_req=9;
+
 
     PCBs.push_back(PCB_TEST_1);
     PCBs.push_back(PCB_TEST_2);
+    PCBs.push_back(PCB_TEST_3);
 
-    runMainMenu();
-
+    //runMainMenu();
+    
+    sched.FCFS(PCBs); 
     return 0;
 };
