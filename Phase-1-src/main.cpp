@@ -337,8 +337,8 @@ int main()
     ProcessControlBlock PCB_TEST_2;
     PCB_TEST_2.name = "PCB2";
 
-    PCBs.push_back(PCB_TEST_1);
-    PCBs.push_back(PCB_TEST_2);
+    // PCBs.push_back(PCB_TEST_1);
+    // PCBs.push_back(PCB_TEST_2);
 
     runMainMenu();
 
