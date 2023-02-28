@@ -24,6 +24,7 @@ void printPCB();
 int searchForPCB(string name);
 int PCBIndexSelect();
 void editPCB();
+void runScheduler();
 void editProcessData(int PCBIndex);
 vector<ProcessControlBlock> PCBs;
 
@@ -34,7 +35,7 @@ void runMainMenu()
     string rawUserInput;
     cout << "Please choose an option by entering the corresponding number...\n 1. View each PCB\n 2. View the process in a specific PCB\n"
          << " 3. Load  a process to a PCB from a text file\n 4. Create a new PCB with process in the terminal\n"
-         << " 5. Edit Data in PCB\n 6. Quit\n\n";
+         << " 5. Edit Data in PCB\n 6. Run Scheduler\n 7. Quit\n\n";
     cin >> rawUserInput;
     int userInput;
     try
@@ -74,6 +75,10 @@ void runMainMenu()
         returnOrQuit();
         break;
     case 6:
+        runScheduler();
+        returnOrQuit();
+        break;
+    case 7:
         cout << "exiting program...";
         exit(0);
         break;
@@ -253,6 +258,51 @@ void editProcessData(int PCBIndex)
     }
     return;
 }
+void runScheduler()
+{
+    Scheduler sched;
+    cout << "\nPlease select which scheduler you want to run\n 1. FCFS\n 2. SJF\n 3. Both\n";
+    string selection;
+    cin >> selection;
+    int selectionInt;
+    try
+    {
+        selectionInt = stoi(selection);
+    }
+    catch (...)
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        runScheduler();
+        return;
+    }
+    if (selectionInt == 1)
+    {
+        sched.FCFS(PCBs);
+    }
+    else if (selectionInt == 2)
+    {
+        sched.SJF(PCBs);
+    }
+    else if (selectionInt == 3)
+    {
+        cout << "First Come First Serve:\n";
+        sched.FCFS(PCBs);
+        cout << "\nShortest Job First:\n";
+        sched.SJF(PCBs);
+    }
+    else
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        runScheduler();
+        return;
+    }
+}
 // Helper to allows user to select a PCB by id
 int PCBIndexSelect()
 {
@@ -329,7 +379,7 @@ void returnOrQuit()
 
 int main()
 {
-    Scheduler sched;
+
     // the following PCBs are for testing purposes
 
     ProcessControlBlock PCB_TEST_1;
@@ -354,8 +404,6 @@ int main()
     PCBs.push_back(PCB_TEST_2);
     PCBs.push_back(PCB_TEST_3);
 
-    // runMainMenu();
-
-    sched.FCFS(PCBs);
+    runMainMenu();
     return 0;
 };
