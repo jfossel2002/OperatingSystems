@@ -258,10 +258,12 @@ void editProcessData(int PCBIndex)
     }
     return;
 }
+
+// Case 6
 void runScheduler()
 {
     Scheduler sched;
-    cout << "\nPlease select which scheduler you want to run\n 1. FCFS\n 2. SJF\n 3. Both\n";
+    cout << "\nPlease select which scheduler you want to run\n 1. First come first serve (FCFS)\n 2. Shortest job first(SJF)\n 3. Both\n";
     string selection;
     cin >> selection;
     int selectionInt;
