@@ -26,6 +26,7 @@ int PCBIndexSelect();
 void editPCB();
 void runScheduler();
 void editProcessData(int PCBIndex);
+void deletePCB();
 vector<ProcessControlBlock> PCBs;
 
 void runMainMenu()
@@ -35,7 +36,7 @@ void runMainMenu()
     string rawUserInput;
     cout << "Please choose an option by entering the corresponding number...\n 1. View each PCB\n 2. View the process in a specific PCB\n"
          << " 3. Load  a process to a PCB from a text file\n 4. Create a new PCB with process in the terminal\n"
-         << " 5. Edit Data in PCB\n 6. Run Scheduler\n 7. Quit\n\n";
+         << " 5. Edit Data in PCB\n 6. Run Scheduler\n 7. Delete A PCB\n 8. Quit\n\n";
     cin >> rawUserInput;
     int userInput;
     try
@@ -79,6 +80,10 @@ void runMainMenu()
         returnOrQuit();
         break;
     case 7:
+        deletePCB();
+        returnOrQuit();
+        break;
+    case 8:
         cout << "exiting program...";
         exit(0);
         break;
@@ -292,7 +297,7 @@ void runScheduler()
     {
         cout << "First Come First Serve:\n";
         sched.FCFS(PCBs);
-        cout << "\nShortest Job First:\n";
+        cout << "\n Shortest Job First:\n";
         sched.SJF(PCBs);
     }
     else
@@ -305,6 +310,18 @@ void runScheduler()
         return;
     }
 }
+
+// Case 7
+void deletePCB()
+{
+    cout << "Select a below PCB to delete: \n";
+    int PCBIndex = PCBIndexSelect();
+    system("clear");
+    PCBs.erase(PCBs.begin() + PCBIndex);
+    cout << "Sucesfully deleted PCB";
+    return;
+}
+
 // Helper to allows user to select a PCB by id
 int PCBIndexSelect()
 {
