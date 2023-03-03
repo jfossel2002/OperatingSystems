@@ -31,6 +31,16 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock>sorted_PCBs)
         <<endl;
 }
 
+Scheduler::Scheduler(int switch_penalty)
+{
+    updatePenalty(switch_penalty); 
+}
+
+void Scheduler::updatePenalty(int new_penalty)
+{
+    penalty = new_penalty;
+}
+
 void Scheduler::FCFS(vector<ProcessControlBlock>PCBs)
 {
     // sort in ascending order of arrival time 
@@ -48,4 +58,13 @@ void Scheduler::SJF(vector<ProcessControlBlock>PCBs)
     [](ProcessControlBlock &a, ProcessControlBlock &b){return a.cpu_req < b.cpu_req;});
 
     makeSchedule(PCBs);
+}
+
+void Scheduler::roundRobin(vector<ProcessControlBlock>PCBs, int quant)
+{
+    //start with fcfs order
+    sort(PCBs.begin(), PCBs.end(),
+    [](ProcessControlBlock &a, ProcessControlBlock &b){return a.arrival_time < b.arrival_time;}); 
+
+
 }
