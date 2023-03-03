@@ -24,7 +24,9 @@ void printPCB();
 int searchForPCB(string name);
 int PCBIndexSelect();
 void editPCB();
+void runScheduler();
 void editProcessData(int PCBIndex);
+void deletePCB();
 vector<ProcessControlBlock> PCBs;
 
 void runMainMenu()
@@ -34,7 +36,7 @@ void runMainMenu()
     string rawUserInput;
     cout << "Please choose an option by entering the corresponding number...\n 1. View each PCB\n 2. View the process in a specific PCB\n"
          << " 3. Load  a process to a PCB from a text file\n 4. Create a new PCB with process in the terminal\n"
-         << " 5. Edit Data in PCB\n 6. Quit\n\n";
+         << " 5. Edit Data in PCB\n 6. Run Scheduler\n 7. Delete A PCB\n 8. Quit\n\n";
     cin >> rawUserInput;
     int userInput;
     try
@@ -74,6 +76,14 @@ void runMainMenu()
         returnOrQuit();
         break;
     case 6:
+        runScheduler();
+        returnOrQuit();
+        break;
+    case 7:
+        deletePCB();
+        returnOrQuit();
+        break;
+    case 8:
         cout << "exiting program...";
         exit(0);
         break;
@@ -162,7 +172,7 @@ void createNewPCBFromFile()
 // CASE 4
 void createNewPCB()
 {
-    string arr[11] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources","arrival_time","cpu_req"};
+    string arr[11] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req"};
     string input_line;
     string temp;
     cout << "Input the id: ";
@@ -202,7 +212,7 @@ void editPCB()
 // Handles all logic
 void editProcessData(int PCBIndex)
 {
-    string options[12] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources","arrival_time","cpu_req"};
+    string options[12] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req"};
     system("clear");
     cout << "Please select which attribute of the process you want to change, input the index\n";
     for (int i = 0; i < 12; i++)
@@ -253,6 +263,65 @@ void editProcessData(int PCBIndex)
     }
     return;
 }
+
+// Case 6
+void runScheduler()
+{
+    Scheduler sched;
+    cout << "\nPlease select which scheduler you want to run\n 1. First come first serve (FCFS)\n 2. Shortest job first(SJF)\n 3. Both\n";
+    string selection;
+    cin >> selection;
+    int selectionInt;
+    try
+    {
+        selectionInt = stoi(selection);
+    }
+    catch (...)
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        runScheduler();
+        return;
+    }
+    if (selectionInt == 1)
+    {
+        sched.FCFS(PCBs);
+    }
+    else if (selectionInt == 2)
+    {
+        sched.SJF(PCBs);
+    }
+    else if (selectionInt == 3)
+    {
+        cout << "First Come First Serve:\n";
+        sched.FCFS(PCBs);
+        cout << "\n Shortest Job First:\n";
+        sched.SJF(PCBs);
+    }
+    else
+    {
+        cout << "Invalid input\npress enter to retry"
+             << endl;
+        cin.ignore(10, '\n');
+        cin.get();
+        runScheduler();
+        return;
+    }
+}
+
+// Case 7
+void deletePCB()
+{
+    cout << "Select a below PCB to delete: \n";
+    int PCBIndex = PCBIndexSelect();
+    system("clear");
+    PCBs.erase(PCBs.begin() + PCBIndex);
+    cout << "Sucesfully deleted PCB";
+    return;
+}
+
 // Helper to allows user to select a PCB by id
 int PCBIndexSelect()
 {
@@ -285,7 +354,6 @@ int PCBIndexSelect()
              << endl;
         cin.ignore(10, '\n');
         cin.get();
-        
 
         return PCBIndexSelect();
     }
@@ -330,34 +398,31 @@ void returnOrQuit()
 
 int main()
 {
-    Scheduler sched;
+
     // the following PCBs are for testing purposes
+    /*
+        ProcessControlBlock PCB_TEST_1;
+        PCB_TEST_1.name = "PCB1";
+        PCB_TEST_1.id = 1;
+        PCB_TEST_1.arrival_time = 1;
+        PCB_TEST_1.cpu_req = 3;
 
-    ProcessControlBlock PCB_TEST_1;
-    PCB_TEST_1.name = "PCB1";
-    PCB_TEST_1.id = 1;
-    PCB_TEST_1.arrival_time=1;
-    PCB_TEST_1.cpu_req=3;
+        ProcessControlBlock PCB_TEST_2;
+        PCB_TEST_2.name = "PCB2";
+        PCB_TEST_2.id = 2;
+        PCB_TEST_2.arrival_time = 4;
+        PCB_TEST_2.cpu_req = 2;
 
-    ProcessControlBlock PCB_TEST_2;
-    PCB_TEST_2.name = "PCB2";
-    PCB_TEST_2.id = 2;
-    PCB_TEST_2.arrival_time =4;
-    PCB_TEST_2.cpu_req=2;
-    
-    ProcessControlBlock PCB_TEST_3;
-    PCB_TEST_3.name = "PCB3";
-    PCB_TEST_3.id = 3;
-    PCB_TEST_3.arrival_time =3;
-    PCB_TEST_3.cpu_req=9;
+        ProcessControlBlock PCB_TEST_3;
+        PCB_TEST_3.name = "PCB3";
+        PCB_TEST_3.id = 3;
+        PCB_TEST_3.arrival_time = 3;
+        PCB_TEST_3.cpu_req = 9;
 
-
-    PCBs.push_back(PCB_TEST_1);
-    PCBs.push_back(PCB_TEST_2);
-    PCBs.push_back(PCB_TEST_3);
-
-    //runMainMenu();
-    
-    sched.FCFS(PCBs); 
+        PCBs.push_back(PCB_TEST_1);
+        PCBs.push_back(PCB_TEST_2);
+        PCBs.push_back(PCB_TEST_3);
+    */
+    runMainMenu();
     return 0;
 };
