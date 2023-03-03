@@ -20,7 +20,9 @@ void ProcessControlBlock::printProcesses() // Prints the procces stored in the P
     cout << "parent: " << parent << "\n";
     cout << "children: " << children << "\n";
     cout << "open_files: " << open_files << "\n";
-    cout << "other_resources: " << other_resources << "\n\n";
+    cout << "other_resources: " << other_resources << "\n";
+    cout << "arrival time: " << arrival_time << "\n";
+    cout << "cpu_req: " << cpu_req << "\n\n";
 }
 
 /*
@@ -115,9 +117,9 @@ bool ProcessControlBlock::loadFromLine(string line)
     try
     {
         getline(ss, s, ' ');
-        arrival_time = stoi(s); 
+        arrival_time = stoi(s);
     }
-    catch(...)
+    catch (...)
     {
         invalid_input("arrival_time", s);
         return false;
@@ -125,14 +127,14 @@ bool ProcessControlBlock::loadFromLine(string line)
     try
     {
         getline(ss, s, ' ');
-        cpu_req = stoi(s); 
+        cpu_req = stoi(s);
     }
-    catch(...)
+    catch (...)
     {
         invalid_input("cpu_req", s);
         return false;
     }
-    
+
     return true;
 }
 
