@@ -7,6 +7,7 @@
 #include "Scheduler.h"
 
 
+
 using namespace std;
 
 void Scheduler::makeSchedule(vector<ProcessControlBlock>sorted_PCBs)
@@ -48,27 +49,50 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock>sorted_PCBs,int quant )
     int stop_time = 0;
     int context_switches=0;
     ProcessControlBlock curr; 
+    int cpu_used;
+    int cpu_start; 
+    
+    cout<<"Round Robin "<< q.size()<<endl;
+
     while (!q.empty())
     {
-       curr = q.front();
+        curr = q.front();
+        cpu_used = tracker.front(); 
+        cpu_start =tracker.front();
 
-
-        //this stuff here probs needs to be modified, just carried it over from previous func
        if (stop_time>= curr.arrival_time){ // arrived before cpu available, schedule asap 
             start_time = stop_time; //curr start = previous stop
         }else{ //arrived while cpu available, upon arrival 
             start_time = curr.arrival_time;
         }
-        stop_time = start_time + curr.cpu_req; 
-        turnaround.push_back(stop_time - curr.arrival_time);
 
+        if (cpu_used+quant >= curr.cpu_req){ //process completed
+            stop_time = start_time + curr.cpu_req - cpu_used;; 
+            q.pop();
+            tracker.pop();
+            
+            // find turnaround
+            turnaround.push_back(stop_time - curr.arrival_time);
+        }else{
+            stop_time = start_time + quant;
+            q.pop();
+            q.push(curr);
+            tracker.pop();
+            tracker.push(cpu_used+quant);
+        }
+        
         cout<<"Process "<<curr.id<<": start: "<<start_time
             <<", stop: "<<stop_time
             <<"\n"; 
        
 
     }
+    cout<<"Average turnaround: "
+        << accumulate(turnaround.begin(),turnaround.end(),0) / turnaround.size()
+        <<endl;
 }
+
+
 
 Scheduler::Scheduler(int switch_penalty)
 {
@@ -105,5 +129,6 @@ void Scheduler::roundRobin(vector<ProcessControlBlock>PCBs, int quant)
     sort(PCBs.begin(), PCBs.end(),
     [](ProcessControlBlock &a, ProcessControlBlock &b){return a.arrival_time < b.arrival_time;}); 
 
+    makeSchedule(PCBs,quant);
 
 }

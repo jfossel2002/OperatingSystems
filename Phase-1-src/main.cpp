@@ -267,7 +267,7 @@ void editProcessData(int PCBIndex)
 // Case 6
 void runScheduler()
 {
-    Scheduler sched;
+    Scheduler sched = Scheduler(2);
     cout << "\nPlease select which scheduler you want to run\n 1. First come first serve (FCFS)\n 2. Shortest job first(SJF)\n 3. Both\n";
     string selection;
     cin >> selection;
@@ -400,7 +400,7 @@ int main()
 {
 
     // the following PCBs are for testing purposes
-    /*
+    
         ProcessControlBlock PCB_TEST_1;
         PCB_TEST_1.name = "PCB1";
         PCB_TEST_1.id = 1;
@@ -422,7 +422,12 @@ int main()
         PCBs.push_back(PCB_TEST_1);
         PCBs.push_back(PCB_TEST_2);
         PCBs.push_back(PCB_TEST_3);
-    */
-    runMainMenu();
+
+
+        Scheduler sched = Scheduler(2);
+        sched.roundRobin(PCBs,2); 
+        //sched.SJF(PCBs);
+    
+    //runMainMenu();
     return 0;
 };
