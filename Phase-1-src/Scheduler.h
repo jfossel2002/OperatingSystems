@@ -10,6 +10,7 @@ class Scheduler
 private: 
     int penalty; //context switch penalty
     void makeSchedule(vector<ProcessControlBlock>sorted_PCBs);
+    void makeSchedule(vector<ProcessControlBlock>sorted_PCBs,int quant); 
 
 public:
     Scheduler(int switch_penalty);

@@ -1,4 +1,5 @@
 #include <vector>
+#include <queue>
 #include <string>
 #include <algorithm>
 #include <numeric>
@@ -29,6 +30,44 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock>sorted_PCBs)
     cout<<"Average turnaround: "
         << accumulate(turnaround.begin(),turnaround.end(),0) / turnaround.size()
         <<endl;
+}
+
+void Scheduler::makeSchedule(vector<ProcessControlBlock>sorted_PCBs,int quant )
+{   
+
+    // add PCBs to q, init tracker 
+    queue<ProcessControlBlock> q; 
+    queue<int> tracker; 
+    for(int i;i++;sorted_PCBs.size()){
+        q.push(sorted_PCBs[i]);
+        tracker.push(0);
+    }
+
+    vector<int> turnaround;
+    int start_time;
+    int stop_time = 0;
+    int context_switches=0;
+    ProcessControlBlock curr; 
+    while (!q.empty())
+    {
+       curr = q.front();
+
+
+        //this stuff here probs needs to be modified, just carried it over from previous func
+       if (stop_time>= curr.arrival_time){ // arrived before cpu available, schedule asap 
+            start_time = stop_time; //curr start = previous stop
+        }else{ //arrived while cpu available, upon arrival 
+            start_time = curr.arrival_time;
+        }
+        stop_time = start_time + curr.cpu_req; 
+        turnaround.push_back(stop_time - curr.arrival_time);
+
+        cout<<"Process "<<curr.id<<": start: "<<start_time
+            <<", stop: "<<stop_time
+            <<"\n"; 
+       
+
+    }
 }
 
 Scheduler::Scheduler(int switch_penalty)
