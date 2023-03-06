@@ -419,13 +419,21 @@ int main()
         PCB_TEST_3.arrival_time = 3;
         PCB_TEST_3.cpu_req = 9;
 
+        ProcessControlBlock PCB_TEST_4;
+        PCB_TEST_4.name = "PCB4";
+        PCB_TEST_4.id = 4;
+        PCB_TEST_4.arrival_time = 5;
+        PCB_TEST_4.cpu_req = 3;
+
         PCBs.push_back(PCB_TEST_1);
         PCBs.push_back(PCB_TEST_2);
-        PCBs.push_back(PCB_TEST_3);
+        //PCBs.push_back(PCB_TEST_3);
+        PCBs.push_back(PCB_TEST_4);
 
 
-        Scheduler sched = Scheduler(2);
+        Scheduler sched = Scheduler(1);//initialize with default penalty, then give user chance to updata later . 
         sched.roundRobin(PCBs,2); 
+        //sched.FCFS(PCBs);
         //sched.SJF(PCBs);
     
     //runMainMenu();
