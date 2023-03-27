@@ -134,6 +134,26 @@ bool ProcessControlBlock::loadFromLine(string line)
         invalid_input("cpu_req", s);
         return false;
     }
+    try
+    {
+        getline(ss, s, ' ');
+        quantum = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("quantum", s);
+        return false;
+    }
+    try
+    {
+        getline(ss, s, ' ');
+        contextSwith_penalty = stoi(s);
+    }
+    catch (...)
+    {
+        invalid_input("contextSwitch_penalty", s);
+        return false;
+    }
 
     return true;
 }
