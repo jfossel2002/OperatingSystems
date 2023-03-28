@@ -30,8 +30,7 @@ void deletePCB();
 void editSchedVars();
 void editSchedVarsLogic(int);
 vector<ProcessControlBlock> PCBs;
-Scheduler sched = Scheduler(1);//default
-int quant = 1;//default
+Scheduler sched;
 void runMainMenu()
 {
     // offers all the options for functionality of the program to the user
@@ -39,7 +38,7 @@ void runMainMenu()
     string rawUserInput;
     cout << "Please choose an option by entering the corresponding number...\n 1. View each PCB\n 2. View the process in a specific PCB\n"
          << " 3. Load  a process to a PCB from a text file\n 4. Create a new PCB with process in the terminal\n"
-         << " 5. Edit Data in PCB\n 6.Edit Scheduler Vars\n 7. Run Scheduler\n 8. Delete A PCB\n 9. Quit\n\n";
+         << " 5. Edit Data in PCB\n 6. Run Scheduler\n 7. Delete A PCB\n 8. Quit\n\n";
     cin >> rawUserInput;
     int userInput;
     try
@@ -79,22 +78,17 @@ void runMainMenu()
         returnOrQuit();
         break;
     case 6:
-        editSchedVars();
-        returnOrQuit();
-        break;
-    case 7:
         runScheduler();
         returnOrQuit();
         break;
-    case 8:
+    case 7:
         deletePCB();
         returnOrQuit();
         break;
-    case 9:
+    case 8:
         cout << "exiting program...";
         exit(0);
         break;
-
     default:
         cout << "please enter a number corresponding to the given options!\npress enter to continue" << endl;
         cin.ignore(10, '\n');
@@ -273,79 +267,6 @@ void editProcessData(int PCBIndex)
 
 // Case 6
 
-void editSchedVars()
-{
-    cout << "Please select which scheduler variable you want to change\n"
-        << "1. Context switch penalty\n"
-        <<"2. Time quantum for Round Robin\n";
-    
-    string rawUserInput;
-    cin >> rawUserInput;
-    int userInput;
-    string newValue;
-    try
-    {
-        userInput = stoi(rawUserInput);
-        if (userInput < 0 or userInput > 2)
-        {
-            throw invalid_argument("");
-        }
-        editSchedVarsLogic(userInput);
-    }
-    catch (...)
-    {
-        cout << "Invalid input\npress enter to retry"
-             << endl;
-        cin.ignore(10, '\n');
-        cin.get();
-        editSchedVars();
-        return;
-    }
-    
-}
-
-void editSchedVarsLogic(int userInput){
-    string newValue;
-    if(userInput==1){
-         cout << "Enter a new context switch penalty:"
-             << endl;
-        cin >> newValue;
-        try{
-            sched.updatePenalty(stoi(newValue));
-            cout << "Value sucesfully changed";
-        }
-        catch(...)
-        {
-            cout << "Invalid input\npress enter to retry"
-             << endl;
-            cin.ignore(10, '\n');
-            cin.get();
-            editSchedVarsLogic(userInput);
-            return;
-            
-        }
-        return;
-    }else if(userInput==2){
-        cout << "Enter a new quantum for round robin:"
-             << endl;
-        cin >> newValue;
-        try{
-            quant = stoi(newValue);
-            cout << "Value sucesfully changed";
-        }
-        catch(...)
-        {
-            cout << "Invalid input\npress enter to retry"
-             << endl;
-            cin.ignore(10, '\n');
-            cin.get();
-            editSchedVarsLogic(userInput);
-            return;
-            
-        }
-        return;
-    }
-}
 void runScheduler()
 {
     
@@ -383,7 +304,7 @@ void runScheduler()
     }
     else if (selectionInt ==4)
     {
-        sched.roundRobin(PCBs,quant);
+        sched.roundRobin(PCBs);
     }
     else
     {
@@ -516,7 +437,7 @@ int main()
         // PCBs.push_back(PCB_TEST_4);
 
 
-        // Scheduler sched = Scheduler(1);//initialize with default penalty, then give user chance to updata later . 
+        // Scheduler sched ; 
         // sched.roundRobin(PCBs,2); 
         // //sched.FCFS(PCBs);
         // //sched.SJF(PCBs);
