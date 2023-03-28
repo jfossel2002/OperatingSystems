@@ -213,10 +213,11 @@ void editPCB()
 // Handles all logic
 void editProcessData(int PCBIndex)
 {
-    string options[12] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req"};
+    string options[14] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent",
+                             "children", "open_files", "other_resources", "arrival_time", "cpu_req","quantum","contextSwitch_penalty"};
     system("clear");
     cout << "Please select which attribute of the process you want to change, input the index\n";
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 14; i++)
     {
         cout << i + 1 << ". " << options[i] << "\n";
     }
@@ -227,7 +228,7 @@ void editProcessData(int PCBIndex)
     try
     {
         userInput = stoi(rawUserInput);
-        if (userInput < 0 or userInput > 12)
+        if (userInput < 0 or userInput > 14)
         {
             throw invalid_argument("");
         }
@@ -254,14 +255,25 @@ void editProcessData(int PCBIndex)
             return;
         }
     }
-    if (PCBs[PCBIndex].edit_process(userInput, newValue))
+    else if (userInput == 13 or userInput == 14)// change all pcbs 
     {
-        cout << "Value sucesfully changed";
+        for(int i=0;i<PCBs.size();i++){
+            PCBs[i].edit_process(userInput, newValue); 
+            }
+        
+       cout << options[userInput-1]<<" has been updated to " << newValue << " for all PCBs" << "\n";
     }
-    else
-    {
-        editProcessData(PCBIndex);
+    else{
+        if (PCBs[PCBIndex].edit_process(userInput, newValue))
+        {
+            cout << "Value sucesfully changed";
+        }
+        else
+        {
+            editProcessData(PCBIndex);
+        }
     }
+    
     return;
 }
 

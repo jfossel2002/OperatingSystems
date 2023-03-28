@@ -29,7 +29,7 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock>sorted_PCBs)
             <<", stop: "<<stop_time<<", turnaround: "<<turnaround[i]
             <<"\n"; 
         
-         stop_time+=sorted_PCBs[i].contextSwith_penalty;
+         stop_time+=sorted_PCBs[i].contextSwitch_penalty;
          num_switches++; 
     }
     cout<<"Average turnaround: "
@@ -93,7 +93,7 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock>sorted_PCBs)
         }else{
             cout<<"\n"; 
         }
-         stop_time+= curr.contextSwith_penalty; 
+         stop_time+= curr.contextSwitch_penalty; 
         num_switches++;
     }
     cout<<"Average turnaround: "
