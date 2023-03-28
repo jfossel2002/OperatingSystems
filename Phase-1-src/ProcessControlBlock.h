@@ -24,7 +24,7 @@ public:
     int arrival_time;
     int cpu_req;
     int quantum; 
-    int contextSwith_penalty; 
+    int contextSwitch_penalty; 
 
     int parent;
     int children;

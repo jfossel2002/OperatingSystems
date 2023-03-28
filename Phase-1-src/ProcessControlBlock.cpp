@@ -23,6 +23,8 @@ void ProcessControlBlock::printProcesses() // Prints the procces stored in the P
     cout << "other_resources: " << other_resources << "\n";
     cout << "arrival time: " << arrival_time << "\n";
     cout << "cpu_req: " << cpu_req << "\n\n";
+    cout << "quantum: " << quantum << "\n";
+    cout << "contextSwitch_penalty: " << contextSwitch_penalty << "\n\n";
 }
 
 /*
@@ -147,7 +149,7 @@ bool ProcessControlBlock::loadFromLine(string line)
     try
     {
         getline(ss, s, ' ');
-        contextSwith_penalty = stoi(s);
+        contextSwitch_penalty = stoi(s);
     }
     catch (...)
     {
@@ -160,12 +162,13 @@ bool ProcessControlBlock::loadFromLine(string line)
 
 void ProcessControlBlock::invalid_input(string input_name, string input_value)
 {
-    cout << "The " << input_name << ": " << input_value << " is not a valid " << input_name << " please verify your input is an interger and within range.\nYhe PCB has not been created.";
+    cout << "The " << input_name << ": " << input_value << " is not a valid " << input_name << " please verify your input is an interger and within range.\nThe PCB has not been created.";
 }
 
 bool ProcessControlBlock::edit_process(int index, string newValue)
 {
-    string options[10] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources"};
+    string options[14] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", 
+    "process_state","parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req", "quantum","contextSwitch_penalty"};
     try
     {
         switch (index)
@@ -208,9 +211,25 @@ bool ProcessControlBlock::edit_process(int index, string newValue)
             open_files = newValue;
             break;
         case 10:
-            cout << "Old value of other_resources: " << open_files << "\nNew value of other_resources: " << newValue << "\n";
-            open_files = newValue;
+            cout << "Old value of other_resources: " << other_resources << "\nNew value of other_resources: " << newValue << "\n";
+            other_resources = newValue;
             break;
+        case 11: 
+            cout << "Old value of arrival_time: " << arrival_time << "\nNew value of arrival_time: " << newValue << "\n";
+            arrival_time = stoi(newValue);
+            break;
+        case 12:
+            cout << "Old value of cpu_req: " << cpu_req << "\nNew value of cpu_req: " << newValue << "\n";
+            cpu_req = stoi(newValue);
+            break;
+        case 13:
+            quantum = stoi(newValue);
+            break;
+        case 14:
+            contextSwitch_penalty = stoi(newValue);
+            break;
+
+
         default:
             cout << "please enter a number corresponding to the given options!\npress enter to continue" << endl;
             cin.ignore(10, '\n');
