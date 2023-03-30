@@ -30,8 +30,8 @@ void deletePCB();
 void editSchedVars();
 void editSchedVarsLogic(int);
 vector<ProcessControlBlock> PCBs;
-Scheduler sched = Scheduler(1);//default
-int quant = 1;//default
+Scheduler sched = Scheduler(1); // default
+int quant = 1;                  // default
 void runMainMenu()
 {
     // offers all the options for functionality of the program to the user
@@ -39,7 +39,7 @@ void runMainMenu()
     string rawUserInput;
     cout << "Please choose an option by entering the corresponding number...\n 1. View each PCB\n 2. View the process in a specific PCB\n"
          << " 3. Load  a process to a PCB from a text file\n 4. Create a new PCB with process in the terminal\n"
-         << " 5. Edit Data in PCB\n 6.Edit Scheduler Vars\n 7. Run Scheduler\n 8. Delete A PCB\n 9. Quit\n\n";
+         << " 5. Edit Data in PCB\n 6. Edit Scheduler Vars\n 7. Run Scheduler\n 8. Delete A PCB\n 9. Quit\n\n";
     cin >> rawUserInput;
     int userInput;
     try
@@ -276,9 +276,9 @@ void editProcessData(int PCBIndex)
 void editSchedVars()
 {
     cout << "Please select which scheduler variable you want to change\n"
-        << "1. Context switch penalty\n"
-        <<"2. Time quantum for Round Robin\n";
-    
+         << "1. Context switch penalty\n"
+         << "2. Time quantum for Round Robin\n";
+
     string rawUserInput;
     cin >> rawUserInput;
     int userInput;
@@ -301,54 +301,58 @@ void editSchedVars()
         editSchedVars();
         return;
     }
-    
 }
 
-void editSchedVarsLogic(int userInput){
+void editSchedVarsLogic(int userInput)
+{
     string newValue;
-    if(userInput==1){
-         cout << "Enter a new context switch penalty:"
+    if (userInput == 1)
+    {
+        cout << "Enter a new context switch penalty:"
              << endl;
         cin >> newValue;
-        try{
+        try
+        {
             sched.updatePenalty(stoi(newValue));
             cout << "Value sucesfully changed";
         }
-        catch(...)
+        catch (...)
         {
             cout << "Invalid input\npress enter to retry"
-             << endl;
+                 << endl;
             cin.ignore(10, '\n');
             cin.get();
             editSchedVarsLogic(userInput);
             return;
-            
         }
         return;
-    }else if(userInput==2){
+    }
+    else if (userInput == 2)
+    {
         cout << "Enter a new quantum for round robin:"
              << endl;
         cin >> newValue;
-        try{
+        try
+        {
             quant = stoi(newValue);
             cout << "Value sucesfully changed";
         }
-        catch(...)
+        catch (...)
         {
             cout << "Invalid input\npress enter to retry"
-             << endl;
+                 << endl;
             cin.ignore(10, '\n');
             cin.get();
             editSchedVarsLogic(userInput);
             return;
-            
         }
         return;
     }
 }
+// CASE 7
 void runScheduler()
 {
-    
+
     cout << "\nPlease select which scheduler you want to run\n 1. First come first serve (FCFS)\n 2. Shortest job first(SJF)\n 3. FCFS and SJF\n 4. Round Robin\n";
     string selection;
     cin >> selection;
@@ -381,9 +385,9 @@ void runScheduler()
         cout << "\n Shortest Job First:\n";
         sched.SJF(PCBs);
     }
-    else if (selectionInt ==4)
+    else if (selectionInt == 4)
     {
-        sched.roundRobin(PCBs,quant);
+        sched.roundRobin(PCBs, quant);
     }
     else
     {
@@ -485,42 +489,41 @@ int main()
 {
 
     // the following PCBs are for testing purposes
-    
-        // ProcessControlBlock PCB_TEST_1;
-        // PCB_TEST_1.name = "PCB1";
-        // PCB_TEST_1.id = 1;
-        // PCB_TEST_1.arrival_time = 1;
-        // PCB_TEST_1.cpu_req = 3;
 
-        // ProcessControlBlock PCB_TEST_2;
-        // PCB_TEST_2.name = "PCB2";
-        // PCB_TEST_2.id = 2;
-        // PCB_TEST_2.arrival_time = 4;
-        // PCB_TEST_2.cpu_req = 2;
+    // ProcessControlBlock PCB_TEST_1;
+    // PCB_TEST_1.name = "PCB1";
+    // PCB_TEST_1.id = 1;
+    // PCB_TEST_1.arrival_time = 1;
+    // PCB_TEST_1.cpu_req = 3;
 
-        // ProcessControlBlock PCB_TEST_3;
-        // PCB_TEST_3.name = "PCB3";
-        // PCB_TEST_3.id = 3;
-        // PCB_TEST_3.arrival_time = 3;
-        // PCB_TEST_3.cpu_req = 9;
+    // ProcessControlBlock PCB_TEST_2;
+    // PCB_TEST_2.name = "PCB2";
+    // PCB_TEST_2.id = 2;
+    // PCB_TEST_2.arrival_time = 4;
+    // PCB_TEST_2.cpu_req = 2;
 
-        // ProcessControlBlock PCB_TEST_4;
-        // PCB_TEST_4.name = "PCB4";
-        // PCB_TEST_4.id = 4;
-        // PCB_TEST_4.arrival_time = 5;
-        // PCB_TEST_4.cpu_req = 3;
+    // ProcessControlBlock PCB_TEST_3;
+    // PCB_TEST_3.name = "PCB3";
+    // PCB_TEST_3.id = 3;
+    // PCB_TEST_3.arrival_time = 3;
+    // PCB_TEST_3.cpu_req = 9;
 
-        // PCBs.push_back(PCB_TEST_1);
-        // PCBs.push_back(PCB_TEST_2);
-        // //PCBs.push_back(PCB_TEST_3);
-        // PCBs.push_back(PCB_TEST_4);
+    // ProcessControlBlock PCB_TEST_4;
+    // PCB_TEST_4.name = "PCB4";
+    // PCB_TEST_4.id = 4;
+    // PCB_TEST_4.arrival_time = 5;
+    // PCB_TEST_4.cpu_req = 3;
 
+    // PCBs.push_back(PCB_TEST_1);
+    // PCBs.push_back(PCB_TEST_2);
+    // //PCBs.push_back(PCB_TEST_3);
+    // PCBs.push_back(PCB_TEST_4);
 
-        // Scheduler sched = Scheduler(1);//initialize with default penalty, then give user chance to updata later . 
-        // sched.roundRobin(PCBs,2); 
-        // //sched.FCFS(PCBs);
-        // //sched.SJF(PCBs);
-    
+    // Scheduler sched = Scheduler(1);//initialize with default penalty, then give user chance to updata later .
+    // sched.roundRobin(PCBs,2);
+    // //sched.FCFS(PCBs);
+    // //sched.SJF(PCBs);
+
     runMainMenu();
     return 0;
 };
