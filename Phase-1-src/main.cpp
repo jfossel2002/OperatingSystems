@@ -173,7 +173,7 @@ void createNewPCBFromFile()
 // CASE 4
 void createNewPCB()
 {
-    string arr[11] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req"};
+    string arr[13] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req", "quantum", "contextSwitch_penalty"};
     string input_line;
     string temp;
     cout << "Input the id: ";
