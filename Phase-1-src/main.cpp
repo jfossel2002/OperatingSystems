@@ -173,7 +173,7 @@ void createNewPCBFromFile()
 // CASE 4
 void createNewPCB()
 {
-    string arr[11] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req"};
+    string arr[13] = {"cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent", "children", "open_files", "other_resources", "arrival_time", "cpu_req", "quantum", "contextSwitch_penalty"};
     string input_line;
     string temp;
     cout << "Input the id: ";
@@ -214,7 +214,7 @@ void editPCB()
 void editProcessData(int PCBIndex)
 {
     string options[14] = {"id", "cpu_state", "memory", "scheduling_information", "accounting_information", "process_state", "parent",
-                             "children", "open_files", "other_resources", "arrival_time", "cpu_req","quantum","contextSwitch_penalty"};
+                          "children", "open_files", "other_resources", "arrival_time", "cpu_req", "quantum", "contextSwitch_penalty"};
     system("clear");
     cout << "Please select which attribute of the process you want to change, input the index\n";
     for (int i = 0; i < 14; i++)
@@ -255,15 +255,18 @@ void editProcessData(int PCBIndex)
             return;
         }
     }
-    else if (userInput == 13 or userInput == 14)// change all pcbs 
+    else if (userInput == 13 or userInput == 14) // change all pcbs
     {
-        for(int i=0;i<PCBs.size();i++){
-            PCBs[i].edit_process(userInput, newValue); 
-            }
-        
-       cout << options[userInput-1]<<" has been updated to " << newValue << " for all PCBs" << "\n";
+        for (int i = 0; i < PCBs.size(); i++)
+        {
+            PCBs[i].edit_process(userInput, newValue);
+        }
+
+        cout << options[userInput - 1] << " has been updated to " << newValue << " for all PCBs"
+             << "\n";
     }
-    else{
+    else
+    {
         if (PCBs[PCBIndex].edit_process(userInput, newValue))
         {
             cout << "Value sucesfully changed";
@@ -273,7 +276,7 @@ void editProcessData(int PCBIndex)
             editProcessData(PCBIndex);
         }
     }
-    
+
     return;
 }
 
@@ -281,7 +284,7 @@ void editProcessData(int PCBIndex)
 
 void runScheduler()
 {
-    
+
     cout << "\nPlease select which scheduler you want to run\n 1. First come first serve (FCFS)\n 2. Shortest job first(SJF)\n 3. FCFS and SJF\n 4. Round Robin\n";
     string selection;
     cin >> selection;
@@ -314,7 +317,7 @@ void runScheduler()
         cout << "\n Shortest Job First:\n";
         sched.SJF(PCBs);
     }
-    else if (selectionInt ==4)
+    else if (selectionInt == 4)
     {
         sched.roundRobin(PCBs);
     }
@@ -418,42 +421,41 @@ int main()
 {
 
     // the following PCBs are for testing purposes
-    
-        // ProcessControlBlock PCB_TEST_1;
-        // PCB_TEST_1.name = "PCB1";
-        // PCB_TEST_1.id = 1;
-        // PCB_TEST_1.arrival_time = 1;
-        // PCB_TEST_1.cpu_req = 3;
 
-        // ProcessControlBlock PCB_TEST_2;
-        // PCB_TEST_2.name = "PCB2";
-        // PCB_TEST_2.id = 2;
-        // PCB_TEST_2.arrival_time = 4;
-        // PCB_TEST_2.cpu_req = 2;
+    // ProcessControlBlock PCB_TEST_1;
+    // PCB_TEST_1.name = "PCB1";
+    // PCB_TEST_1.id = 1;
+    // PCB_TEST_1.arrival_time = 1;
+    // PCB_TEST_1.cpu_req = 3;
 
-        // ProcessControlBlock PCB_TEST_3;
-        // PCB_TEST_3.name = "PCB3";
-        // PCB_TEST_3.id = 3;
-        // PCB_TEST_3.arrival_time = 3;
-        // PCB_TEST_3.cpu_req = 9;
+    // ProcessControlBlock PCB_TEST_2;
+    // PCB_TEST_2.name = "PCB2";
+    // PCB_TEST_2.id = 2;
+    // PCB_TEST_2.arrival_time = 4;
+    // PCB_TEST_2.cpu_req = 2;
 
-        // ProcessControlBlock PCB_TEST_4;
-        // PCB_TEST_4.name = "PCB4";
-        // PCB_TEST_4.id = 4;
-        // PCB_TEST_4.arrival_time = 5;
-        // PCB_TEST_4.cpu_req = 3;
+    // ProcessControlBlock PCB_TEST_3;
+    // PCB_TEST_3.name = "PCB3";
+    // PCB_TEST_3.id = 3;
+    // PCB_TEST_3.arrival_time = 3;
+    // PCB_TEST_3.cpu_req = 9;
 
-        // PCBs.push_back(PCB_TEST_1);
-        // PCBs.push_back(PCB_TEST_2);
-        // //PCBs.push_back(PCB_TEST_3);
-        // PCBs.push_back(PCB_TEST_4);
+    // ProcessControlBlock PCB_TEST_4;
+    // PCB_TEST_4.name = "PCB4";
+    // PCB_TEST_4.id = 4;
+    // PCB_TEST_4.arrival_time = 5;
+    // PCB_TEST_4.cpu_req = 3;
 
+    // PCBs.push_back(PCB_TEST_1);
+    // PCBs.push_back(PCB_TEST_2);
+    // //PCBs.push_back(PCB_TEST_3);
+    // PCBs.push_back(PCB_TEST_4);
 
-        // Scheduler sched ; 
-        // sched.roundRobin(PCBs,2); 
-        // //sched.FCFS(PCBs);
-        // //sched.SJF(PCBs);
-    
+    // Scheduler sched = Scheduler(1);//initialize with default penalty, then give user chance to updata later .
+    // sched.roundRobin(PCBs,2);
+    // //sched.FCFS(PCBs);
+    // //sched.SJF(PCBs);
+
     runMainMenu();
     return 0;
 };
