@@ -30,4 +30,6 @@ public:
     int children;
 
     bool loadFromLine(string line);
+
+    int memory_location;
 };
