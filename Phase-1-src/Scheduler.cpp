@@ -13,7 +13,7 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
     vector<int> turnaround;
     int num_switches = 0;
     int start_time;
-    int stop_time = 0;
+    int stop_time = 0;  
     for (int i = 0; i < static_cast<int>(sorted_PCBs.size()); i++)
     {
         if (stop_time >= sorted_PCBs[i].arrival_time)
@@ -24,15 +24,15 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
         { // arrived while cpu available, upon arrival
             start_time = sorted_PCBs[i].arrival_time;
         }
-        stop_time = start_time + sorted_PCBs[i].cpu_req;
+        stop_time = start_time + sorted_PCBs[i].cpu_req; 
         turnaround.push_back(stop_time - sorted_PCBs[i].arrival_time);
 
         cout << "Process " << sorted_PCBs[i].id << ": start: " << start_time
              << ", stop: " << stop_time << ", turnaround: " << turnaround[i]
              << "\n";
-
+        
         stop_time += sorted_PCBs[i].contextSwitch_penalty;
-        num_switches++;
+         num_switches++; 
     }
     cout << "Average turnaround: "
          << accumulate(turnaround.begin(), turnaround.end(), 0) / turnaround.size()
@@ -41,10 +41,10 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
 }
 
 void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
-{
-    // add PCBs to q, init tracker
-    queue<ProcessControlBlock> q;
-    queue<int> tracker;
+{   
+    // add PCBs to q, init tracker 
+    queue<ProcessControlBlock> q; 
+    queue<int> tracker; 
     for (int i = 0; i < sorted_PCBs.size(); i++)
     {
         q.push(sorted_PCBs[i]);
@@ -55,17 +55,18 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
     int num_switches = 1;
     int start_time;
     int stop_time = q.front().contextSwitch_penalty;
-    ProcessControlBlock curr;
+    ProcessControlBlock curr; 
     int cpu_used;
     bool completed;
+    
 
     while (!q.empty())
     {
 
         completed = false;
         curr = q.front();
-        cpu_used = tracker.front();
-
+        cpu_used = tracker.front(); 
+       
         if (stop_time >= curr.arrival_time)
         {                           // arrived before cpu available, schedule asap
             start_time = stop_time; // curr start = previous stop
@@ -77,10 +78,10 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
 
         if (cpu_used + curr.quantum >= curr.cpu_req)
         { // process completed
-            stop_time = start_time + curr.cpu_req - cpu_used;
+            stop_time = start_time + curr.cpu_req - cpu_used; 
             q.pop();
             tracker.pop();
-
+            
             // find turnaround
             turnaround.push_back(stop_time - curr.arrival_time);
             completed = true;
@@ -93,18 +94,14 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
             tracker.pop();
             tracker.push(cpu_used + curr.quantum);
         }
-
+        
         cout << "Process " << curr.id << ": start: " << start_time
              << ", stop: " << stop_time;
         if (completed)
         {
             cout << " Turnaround: " << stop_time - curr.arrival_time << "\n";
         }
-        else
-        {
-            cout << "\n";
-        }
-        stop_time += curr.contextSwitch_penalty;
+         stop_time+= curr.contextSwitch_penalty; 
         num_switches++;
     }
     cout << "Average turnaround: "
@@ -117,7 +114,7 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
 
 void Scheduler::FCFS(vector<ProcessControlBlock> PCBs)
 {
-    // sort in ascending order of arrival time
+    // sort in ascending order of arrival time 
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.arrival_time < b.arrival_time; });
