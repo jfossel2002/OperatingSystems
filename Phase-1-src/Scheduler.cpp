@@ -11,7 +11,7 @@ using namespace std;
 
 MemoryAllocationComponent memoryAllocationComponent;
 // private
-void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
+void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice)
 {
     vector<int> turnaround;
     int num_switches = 0;
@@ -19,19 +19,6 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
     int stop_time = 0;
     for (int i = 0; i < static_cast<int>(sorted_PCBs.size()); i++)
     {
-        // include the memory allocation component
-        if (sorted_PCBs[i].memory > 0)
-        {
-            memoryAllocationComponent.addFirstFit(sorted_PCBs[i]);
-        }
-        else if (sorted_PCBs[i].memory < 0)
-        {
-            memoryAllocationComponent.removeProcess(sorted_PCBs[i]);
-        }
-        else
-        {
-            cout << "Process " << sorted_PCBs[i].id << " has no memory requirements" << endl;
-        }
 
         if (stop_time >= sorted_PCBs[i].arrival_time)
         {                           // arrived before cpu available, schedule asap
@@ -47,6 +34,23 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
         cout << "Process " << sorted_PCBs[i].id << ": start: " << start_time
              << ", stop: " << stop_time << ", turnaround: " << turnaround[i]
              << "\n";
+        // include the memory allocation component
+        if (sorted_PCBs[i].memory > 0)
+        {
+            if (choice == 1)
+            {
+                memoryAllocationComponent.addFirstFit(sorted_PCBs[i]);
+            }
+            else
+            {
+                memoryAllocationComponent.addWorstFit(sorted_PCBs[i]);
+            }
+            memoryAllocationComponent.removeProcess(sorted_PCBs[i]);
+        }
+        else
+        {
+            cout << "Process " << sorted_PCBs[i].id << " has no memory requirements" << endl;
+        }
 
         stop_time += sorted_PCBs[i].contextSwitch_penalty;
         num_switches++;
@@ -57,7 +61,7 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
          << endl;
 }
 
-void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
+void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice)
 {
     // add PCBs to q, init tracker
     queue<ProcessControlBlock> q;
@@ -132,32 +136,32 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
 
 // public
 
-void Scheduler::FCFS(vector<ProcessControlBlock> PCBs)
+void Scheduler::FCFS(vector<ProcessControlBlock> PCBs, int choice)
 {
     // sort in ascending order of arrival time
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.arrival_time < b.arrival_time; });
 
-    makeSchedule(PCBs);
+    makeSchedule(PCBs, choice);
 }
 
-void Scheduler::SJF(vector<ProcessControlBlock> PCBs)
+void Scheduler::SJF(vector<ProcessControlBlock> PCBs, int choice)
 {
     // sort in ascending order of job length
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.cpu_req < b.cpu_req; });
 
-    makeSchedule(PCBs);
+    makeSchedule(PCBs, choice);
 }
 
-void Scheduler::roundRobin(vector<ProcessControlBlock> PCBs)
+void Scheduler::roundRobin(vector<ProcessControlBlock> PCBs, int choice)
 {
     // start with fcfs order
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.arrival_time < b.arrival_time; });
 
-    makeRRSchedule(PCBs);
+    makeRRSchedule(PCBs, choice);
 }

@@ -10,10 +10,11 @@ private:
     void compact();
 
 public:
-    int space_size = 16000;
+    int space_size = 15000;
     vector<ProcessControlBlock> allocations;
 
     void addWorstFit(ProcessControlBlock PCB);
     void addFirstFit(ProcessControlBlock PCB);
     void removeProcess(ProcessControlBlock PCB);
+    void printAllocations();
 };
