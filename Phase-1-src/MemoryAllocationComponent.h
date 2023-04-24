@@ -10,6 +10,7 @@ private:
     void compact();
 
 public:
+    int space_size = 16000;
     vector<ProcessControlBlock> allocations;
 
     void addWorstFit(ProcessControlBlock PCB);

@@ -5,9 +5,8 @@
 #include <numeric>
 #include <iostream>
 #include "Scheduler.h"
-#include "ProcessControlBlock.h"
 #include "MemoryAllocationComponent.h"
- 
+
 using namespace std;
 
 MemoryAllocationComponent memoryAllocationComponent;
@@ -33,8 +32,7 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
         {
             cout << "Process " << sorted_PCBs[i].id << " has no memory requirements" << endl;
         }
- 
- 
+
         if (stop_time >= sorted_PCBs[i].arrival_time)
         {                           // arrived before cpu available, schedule asap
             start_time = stop_time; // curr start = previous stop
@@ -45,11 +43,11 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
         }
         stop_time = start_time + sorted_PCBs[i].cpu_req;
         turnaround.push_back(stop_time - sorted_PCBs[i].arrival_time);
- 
+
         cout << "Process " << sorted_PCBs[i].id << ": start: " << start_time
              << ", stop: " << stop_time << ", turnaround: " << turnaround[i]
              << "\n";
- 
+
         stop_time += sorted_PCBs[i].contextSwitch_penalty;
         num_switches++;
     }
@@ -58,7 +56,7 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
          << " Context Switches: " << num_switches - 1
          << endl;
 }
- 
+
 void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
 {
     // add PCBs to q, init tracker
@@ -69,7 +67,7 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
         q.push(sorted_PCBs[i]);
         tracker.push(0);
     }
- 
+
     vector<int> turnaround;
     int num_switches = 1;
     int start_time;
@@ -77,14 +75,14 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
     ProcessControlBlock curr;
     int cpu_used;
     bool completed;
- 
+
     while (!q.empty())
     {
- 
+
         completed = false;
         curr = q.front();
         cpu_used = tracker.front();
- 
+
         if (stop_time >= curr.arrival_time)
         {                           // arrived before cpu available, schedule asap
             start_time = stop_time; // curr start = previous stop
@@ -93,13 +91,13 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
         { // arrived while cpu available, upon arrival
             start_time = curr.arrival_time;
         }
- 
+
         if (cpu_used + curr.quantum >= curr.cpu_req)
         { // process completed
             stop_time = start_time + curr.cpu_req - cpu_used;
             q.pop();
             tracker.pop();
- 
+
             // find turnaround
             turnaround.push_back(stop_time - curr.arrival_time);
             completed = true;
@@ -112,7 +110,7 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
             tracker.pop();
             tracker.push(cpu_used + curr.quantum);
         }
- 
+
         cout << "Process " << curr.id << ": start: " << start_time
              << ", stop: " << stop_time;
         if (completed)
@@ -131,35 +129,35 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs)
          << ", Context Switches: " << num_switches - 1
          << endl;
 }
- 
+
 // public
- 
+
 void Scheduler::FCFS(vector<ProcessControlBlock> PCBs)
 {
     // sort in ascending order of arrival time
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.arrival_time < b.arrival_time; });
- 
+
     makeSchedule(PCBs);
 }
- 
+
 void Scheduler::SJF(vector<ProcessControlBlock> PCBs)
 {
     // sort in ascending order of job length
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.cpu_req < b.cpu_req; });
- 
+
     makeSchedule(PCBs);
 }
- 
+
 void Scheduler::roundRobin(vector<ProcessControlBlock> PCBs)
 {
     // start with fcfs order
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.arrival_time < b.arrival_time; });
- 
+
     makeRRSchedule(PCBs);
 }
