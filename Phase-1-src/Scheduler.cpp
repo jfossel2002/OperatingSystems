@@ -9,6 +9,8 @@
 #include "MemoryAllocationComponent.h"
  
 using namespace std;
+
+MemoryAllocationComponent memoryAllocationComponent;
 // private
 void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs)
 {
