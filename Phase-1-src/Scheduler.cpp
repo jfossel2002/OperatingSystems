@@ -10,6 +10,7 @@
 using namespace std;
 
 MemoryAllocationComponent memoryAllocationComponent;
+int cycle_counter = 0;
 // private
 void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice)
 {
@@ -17,6 +18,8 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice
     int num_switches = 0;
     int start_time;
     int stop_time = 0;
+    MemoryAllocationComponent memory_component; // instance of memory class component
+
     for (int i = 0; i < static_cast<int>(sorted_PCBs.size()); i++)
     {
 
@@ -59,11 +62,18 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice
          << accumulate(turnaround.begin(), turnaround.end(), 0) / turnaround.size()
          << " Context Switches: " << num_switches - 1
          << endl;
+    cycle_counter++;
 }
 
 void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice)
 {
     // add PCBs to q, init tracker
+    /*
+    I.e. for the 3 different phase 2/3 algs FCFS, SJF, and RR, we need to add in the memory mangements algs. 
+    This consists of making it so when a process arrives it gets allocated memory (using one of the two Phase 4 algs),
+    if there is no room in memory then it needs to wait. When a process completes running it needs to be removed memory 
+    and compaction should occur  
+    */
     queue<ProcessControlBlock> q;
     queue<int> tracker;
     for (int i = 0; i < sorted_PCBs.size(); i++)
@@ -135,13 +145,41 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choi
 }
 
 // public
-
+#define MEMORY_SIZE 1024
 void Scheduler::FCFS(vector<ProcessControlBlock> PCBs, int choice)
 {
     // sort in ascending order of arrival time
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.arrival_time < b.arrival_time; });
+
+    // memory management
+    int memory_size = MEMORY_SIZE; // total memory size
+    vector<int> memory; // keep track of free memory blocks
+    memory.push_back(memory_size);
+
+        for (ProcessControlBlock pcb : PCBs) {
+        // if there is enough memory, allocate it
+        if (pcb.memory_req <= memory[0]) {
+            pcb.memory_location = memory_size - memory[0];
+            memory[0] -= pcb.memory_req;
+        } else {
+            // not enough memory, wait until there is
+            pcb.state = "WAITING"; // that means the process is waiting for memory
+        }
+    }
+
+    // compact memory by merging free blocks
+    vector<int> new_memory;
+    for (int block : memory) {
+        if (new_memory.empty() || new_memory.back() + block == memory_size) {
+            new_memory.back() += block;
+        } else {
+            new_memory.push_back(block);
+        }
+    }
+
+    memory = new_memory;
 
     makeSchedule(PCBs, choice);
 }

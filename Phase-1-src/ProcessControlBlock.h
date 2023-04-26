@@ -26,6 +26,8 @@ public:
     int cpu_req;
     int quantum;
     int contextSwitch_penalty;
+    int memory_req; // added this
+    string state; // added this
 
     int parent;
     int children;
