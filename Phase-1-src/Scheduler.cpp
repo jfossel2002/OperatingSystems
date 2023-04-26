@@ -95,6 +95,7 @@ void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choi
         { // arrived while cpu available, upon arrival
             start_time = curr.arrival_time;
         }
+        // Run mem_alloc
 
         if (cpu_used + curr.quantum >= curr.cpu_req)
         { // process completed
