@@ -207,6 +207,48 @@ void Scheduler::SJF(vector<ProcessControlBlock> PCBs, int choice)
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.cpu_req < b.cpu_req; });
 
+    // memory management
+    int memory_size = MEMORY_SIZE; // total memory size
+    vector<int> memory; // keep track of free memory blocks
+    memory.push_back(memory_size);
+
+        for (ProcessControlBlock pcb : PCBs) {
+        // if there is enough memory, allocate it
+        cout << "PCB " << pcb.id << ": " << endl;
+        cout << "State: " << pcb.state << endl;
+        cout << "Memory required: " << pcb.memory_req << endl;
+        
+        if (pcb.memory_req <= memory[0]) {
+            cout << "Allocation " << pcb.memory_req << " memory to PCB " << pcb.id << endl;
+            pcb.memory_location = memory_size - memory[0];
+            memory[0] -= pcb.memory_req;
+        } else {
+            // not enough memory, wait until there is
+            pcb.state = "WAITING"; 
+        }
+
+        if (pcb.state == "WAITING" && pcb.memory_req <= memory[0]) {
+            cout << "Allocation " << pcb.memory_req << " memory to PCB " << pcb.id << endl;
+            pcb.memory_location = memory_size - memory[0];
+            memory[0] -= pcb.memory_req;
+            pcb.state = "READY";
+        }
+    }
+
+    // compact memory by merging free blocks
+    vector<int> new_memory;
+    for (int block : memory) {
+        if (!new_memory.empty() && new_memory.back() + block == memory_size) {
+            new_memory.back() += block; 
+        } else {
+            if (new_memory.size() == new_memory.capacity()) {
+                new_memory.reserve(new_memory.size() * 2);  
+            }
+            new_memory.push_back(block);
+        }
+    }
+
+
     makeSchedule(PCBs, choice);
 }
 
@@ -216,6 +258,47 @@ void Scheduler::roundRobin(vector<ProcessControlBlock> PCBs, int choice)
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
          { return a.arrival_time < b.arrival_time; });
+
+        // memory management
+    int memory_size = MEMORY_SIZE; // total memory size
+    vector<int> memory; // keep track of free memory blocks
+    memory.push_back(memory_size);
+
+        for (ProcessControlBlock pcb : PCBs) {
+        // if there is enough memory, allocate it
+        cout << "PCB " << pcb.id << ": " << endl;
+        cout << "State: " << pcb.state << endl;
+        cout << "Memory required: " << pcb.memory_req << endl;
+        
+        if (pcb.memory_req <= memory[0]) {
+            cout << "Allocation " << pcb.memory_req << " memory to PCB " << pcb.id << endl;
+            pcb.memory_location = memory_size - memory[0];
+            memory[0] -= pcb.memory_req;
+        } else {
+            // not enough memory, wait until there is
+            pcb.state = "WAITING"; 
+        }
+
+        if (pcb.state == "WAITING" && pcb.memory_req <= memory[0]) {
+            cout << "Allocation " << pcb.memory_req << " memory to PCB " << pcb.id << endl;
+            pcb.memory_location = memory_size - memory[0];
+            memory[0] -= pcb.memory_req;
+            pcb.state = "READY";
+        }
+    }
+
+    // compact memory by merging free blocks
+    vector<int> new_memory;
+    for (int block : memory) {
+        if (!new_memory.empty() && new_memory.back() + block == memory_size) {
+            new_memory.back() += block; 
+        } else {
+            if (new_memory.size() == new_memory.capacity()) {
+                new_memory.reserve(new_memory.size() * 2);  
+            }
+            new_memory.push_back(block);
+        }
+    }
 
     makeRRSchedule(PCBs, choice);
 }
