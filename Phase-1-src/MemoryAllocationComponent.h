@@ -6,15 +6,13 @@ using namespace std;
 
 class MemoryAllocationComponent
 {
-private:
-    void compact();
-
 public:
     int space_size = 15000;
     vector<ProcessControlBlock> allocations;
-
-    void addWorstFit(ProcessControlBlock PCB);
-    void addFirstFit(ProcessControlBlock PCB);
+    bool compact(int cycle);
+    bool addWorstFit(ProcessControlBlock PCB);
+    bool addFirstFit(ProcessControlBlock PCB);
     void removeProcess(ProcessControlBlock PCB);
     void printAllocations();
+    vector<ProcessControlBlock> getAllocations();
 };

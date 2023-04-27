@@ -9,6 +9,7 @@ class Scheduler
 
 private:
     void makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice);
+    void makeScheduleSJF(vector<ProcessControlBlock> sorted_PCBs, int choice);
     void makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice);
 
 public:

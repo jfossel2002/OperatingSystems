@@ -13,52 +13,200 @@ MemoryAllocationComponent memoryAllocationComponent;
 // private
 void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice)
 {
+    string finalString = "\n";
     vector<int> turnaround;
     int num_switches = 0;
     int start_time;
     int stop_time = 0;
-    for (int i = 0; i < static_cast<int>(sorted_PCBs.size()); i++)
+    bool currentlyRunning = false;
+    int proccessNumber = 0;
+    bool scheduleRunning = true;
+    int clockCycle = 0;
+    int proccessCycles = 0;
+    bool added = false;
+    int totalCompactions = 0;
+    vector<ProcessControlBlock> unallocatedPCBS = sorted_PCBs;
+    while (scheduleRunning)
     {
 
-        if (stop_time >= sorted_PCBs[i].arrival_time)
-        {                           // arrived before cpu available, schedule asap
-            start_time = stop_time; // curr start = previous stop
-        }
-        else
-        { // arrived while cpu available, upon arrival
-            start_time = sorted_PCBs[i].arrival_time;
-        }
-        stop_time = start_time + sorted_PCBs[i].cpu_req;
-        turnaround.push_back(stop_time - sorted_PCBs[i].arrival_time);
-
-        cout << "Process " << sorted_PCBs[i].id << ": start: " << start_time
-             << ", stop: " << stop_time << ", turnaround: " << turnaround[i]
-             << "\n";
-        // include the memory allocation component
-        if (sorted_PCBs[i].memory > 0)
+        if (!currentlyRunning)
         {
-            if (choice == 1)
+            start_time = clockCycle;
+            proccessCycles = sorted_PCBs[proccessNumber].cpu_req;
+            if (proccessCycles > 0)
             {
-                memoryAllocationComponent.addFirstFit(sorted_PCBs[i]);
+                proccessCycles--;
             }
-            else
-            {
-                memoryAllocationComponent.addWorstFit(sorted_PCBs[i]);
-            }
-            memoryAllocationComponent.removeProcess(sorted_PCBs[i]);
+            currentlyRunning = true;
         }
-        else
+        else if (currentlyRunning)
         {
-            cout << "Process " << sorted_PCBs[i].id << " has no memory requirements" << endl;
-        }
+            if (proccessCycles > 0)
+            {
 
-        stop_time += sorted_PCBs[i].contextSwitch_penalty;
-        num_switches++;
+                proccessCycles--;
+            }
+            else // Proccess is done running
+            {
+                currentlyRunning = false;
+                stop_time = clockCycle;
+                turnaround.push_back(stop_time - sorted_PCBs[proccessNumber].arrival_time);
+                num_switches++;
+                finalString += "Process " + to_string(sorted_PCBs[proccessNumber].id) + ": start: " + to_string(start_time) + ", stop: " + to_string(stop_time) + ", turnaround: " + to_string(turnaround[proccessNumber]) + "\n";
+                memoryAllocationComponent.removeProcess(sorted_PCBs[proccessNumber]);
+                if (memoryAllocationComponent.compact(clockCycle))
+                {
+                    totalCompactions++;
+                }
+                proccessNumber++;
+                if (proccessNumber >= sorted_PCBs.size())
+                {
+                    scheduleRunning = false;
+                    break;
+                }
+            }
+        }
+        for (ProcessControlBlock pcb : unallocatedPCBS)
+        {
+            if (pcb.arrival_time <= clockCycle)
+            {
+                if (choice == 1)
+                {
+                    added = memoryAllocationComponent.addFirstFit(pcb);
+                }
+                else
+                {
+                    added = memoryAllocationComponent.addWorstFit(pcb);
+                }
+                if (added)
+                {
+                    cout << " Allocated memory to PCB: " << pcb.id << " at cycle: " << clockCycle << endl;
+
+                    unallocatedPCBS.erase(unallocatedPCBS.begin());
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        clockCycle++;
     }
+    cout << finalString << endl;
     cout << "Average turnaround: "
          << accumulate(turnaround.begin(), turnaround.end(), 0) / turnaround.size()
          << " Context Switches: " << num_switches - 1
          << endl;
+    cout << "Total Compactions: " << totalCompactions << endl;
+}
+
+void Scheduler::makeScheduleSJF(vector<ProcessControlBlock> sorted_PCBs, int choice)
+{
+    string finalString = "\n";
+    vector<int> turnaround;
+    int num_switches = 0;
+    int start_time;
+    int stop_time = 0;
+    bool currentlyRunning = false;
+    int proccessNumber = 0;
+    bool scheduleRunning = true;
+    int clockCycle = 0;
+    int proccessCycles = 0;
+    bool added = false;
+    int nextProccess = 0;
+    int minJobRun = 999;
+    int totalCompactions = 0;
+    vector<ProcessControlBlock> unallocatedPCBS = sorted_PCBs;
+    vector<ProcessControlBlock> memoryPCBS = sorted_PCBs;
+    while (scheduleRunning)
+    {
+        for (int i = 0; i < unallocatedPCBS.size(); i++)
+        {
+            ProcessControlBlock pcb = unallocatedPCBS[i];
+            if (pcb.arrival_time <= clockCycle)
+            {
+                if (choice == 1)
+                {
+                    added = memoryAllocationComponent.addFirstFit(pcb);
+                }
+                else
+                {
+                    added = memoryAllocationComponent.addWorstFit(pcb);
+                }
+                if (added)
+                {
+                    cout << " Allocated memory to PCB: " << pcb.id << " at cycle: " << clockCycle << endl;
+                    for (int i = 0; i < unallocatedPCBS.size(); i++)
+                    {
+                        if (unallocatedPCBS[i].id == pcb.id)
+                        {
+                            unallocatedPCBS.erase(unallocatedPCBS.begin() + i);
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        if (!currentlyRunning)
+        {
+            start_time = clockCycle;
+            nextProccess = 0;
+            minJobRun = 999;
+            memoryPCBS = memoryAllocationComponent.getAllocations();
+            for (int i = 0; i < memoryPCBS.size(); i++)
+            {
+                if (memoryPCBS[i].cpu_req < minJobRun)
+                {
+                    nextProccess = i;
+                    minJobRun = memoryPCBS[i].cpu_req;
+                }
+            }
+            proccessCycles = memoryPCBS[nextProccess].cpu_req; // Seg fault here on last process
+            if (proccessCycles > 0)
+            {
+                proccessCycles--;
+            }
+            currentlyRunning = true;
+        }
+        else if (currentlyRunning)
+        {
+            if (proccessCycles > 0)
+            {
+
+                proccessCycles--;
+            }
+            else // Proccess is done running
+            {
+                currentlyRunning = false;
+                stop_time = clockCycle;
+                turnaround.push_back(stop_time - memoryPCBS[nextProccess].arrival_time);
+                num_switches++;
+                finalString += "Process " + to_string(memoryPCBS[nextProccess].id) + ": start: " + to_string(start_time) + ", stop: " + to_string(stop_time) + ", turnaround: " + to_string(turnaround[proccessNumber]) + "\n";
+                memoryAllocationComponent.removeProcess(memoryPCBS[nextProccess]);
+                if (memoryAllocationComponent.compact(clockCycle))
+                {
+                    totalCompactions++;
+                }
+                proccessNumber++;
+                if (proccessNumber >= sorted_PCBs.size())
+                {
+                    scheduleRunning = false;
+                    break;
+                }
+            }
+        }
+        clockCycle++;
+    }
+    cout << finalString << endl;
+    cout << "Average turnaround: "
+         << accumulate(turnaround.begin(), turnaround.end(), 0) / turnaround.size()
+         << " Context Switches: " << num_switches - 1
+         << endl;
+    cout << "Total Compactions: " << totalCompactions << endl;
 }
 
 void Scheduler::makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice)
@@ -152,9 +300,9 @@ void Scheduler::SJF(vector<ProcessControlBlock> PCBs, int choice)
     // sort in ascending order of job length
     sort(PCBs.begin(), PCBs.end(),
          [](ProcessControlBlock &a, ProcessControlBlock &b)
-         { return a.cpu_req < b.cpu_req; });
+         { return a.arrival_time < b.arrival_time; });
 
-    makeSchedule(PCBs, choice);
+    makeScheduleSJF(PCBs, choice);
 }
 
 void Scheduler::roundRobin(vector<ProcessControlBlock> PCBs, int choice)
