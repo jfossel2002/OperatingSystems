@@ -13,12 +13,12 @@ bool MemoryAllocationComponent::compact(int cycle)
         if (i == 0)
         {
             allocations[i].memory_location = 0;
-            cout << "COMPACTION: PCB: " << allocations[i].id << " Reallocated to memory start: " << allocations[i].memory_location << " end: " << allocations[i].memory_location + allocations[i].memory << " at cycle: " << cycle << endl;
+            cout << "Cycle " << cycle << ": COMPACTION: PCB: " << allocations[i].id << " Reallocated to memory: " << allocations[i].memory_location << "-" << allocations[i].memory_location + allocations[i].memory - 1 << endl;
         }
         else
         {
-            allocations[i].memory_location = allocations[i - 1].memory_location + allocations[i - 1].memory + 1;
-            cout << "COMPACTION: PCB: " << allocations[i].id << " reallocated to memory start: " << allocations[i].memory_location << " end: " << allocations[i].memory_location + allocations[i].memory << " at cycle: " << cycle << endl;
+            allocations[i].memory_location = allocations[i - 1].memory_location + allocations[i - 1].memory;
+            cout << "Cycle " << cycle << ": COMPACTION: PCB: " << allocations[i].id << " reallocated to memory: " << allocations[i].memory_location << "-" << allocations[i].memory_location + allocations[i].memory - 1 << endl;
         }
     }
     if (allocations.size() > 0)
@@ -31,13 +31,13 @@ bool MemoryAllocationComponent::compact(int cycle)
     }
 }
 
-bool MemoryAllocationComponent::addFirstFit(ProcessControlBlock PCB)
+bool MemoryAllocationComponent::addFirstFit(ProcessControlBlock PCB, int cycle)
 {
     if (allocations.size() == 0)
     {
         PCB.memory_location = 0;
         allocations.push_back(PCB);
-        cout << "Starts at location: " << PCB.memory_location << " and has size " << PCB.memory;
+        cout << "Cycle " << cycle << ": Allocated memory to PCB: " << PCB.id << " Location: " << PCB.memory_location << "-" << PCB.memory_location + PCB.memory - 1 << " size: " << PCB.memory << endl;
         return true;
     }
     else
@@ -51,9 +51,9 @@ bool MemoryAllocationComponent::addFirstFit(ProcessControlBlock PCB)
         int hole_size = hole_end - hole_start;
         if (hole_size >= PCB.memory)
         {
-            cout << "Starts at location: " << hole_start << " and has size " << PCB.memory;
             PCB.memory_location = hole_start;
-            allocations.insert(allocations.begin() + (allocations.size()), PCB);
+            cout << "Cycle " << cycle << ": Allocated memory to PCB: " << PCB.id << " Location: " << PCB.memory_location << "-" << hole_start + PCB.memory - 1 << " size: " << PCB.memory << endl;
+            allocations.push_back(PCB);
             return true;
         }
     }
@@ -61,13 +61,13 @@ bool MemoryAllocationComponent::addFirstFit(ProcessControlBlock PCB)
     return false;
 }
 
-bool MemoryAllocationComponent::addWorstFit(ProcessControlBlock PCB)
+bool MemoryAllocationComponent::addWorstFit(ProcessControlBlock PCB, int cycle)
 {
     if (allocations.size() == 0)
     {
         PCB.memory_location = 0;
         allocations.push_back(PCB);
-        cout << "Starts at location: " << PCB.memory_location << " and has size " << PCB.memory;
+        cout << "Cycle " << cycle << ": Allocated memory to PCB: " << PCB.id << " Location: " << PCB.memory_location << "-" << PCB.memory_location + PCB.memory - 1 << " size: " << PCB.memory << endl;
         return true;
     }
     else
@@ -97,8 +97,8 @@ bool MemoryAllocationComponent::addWorstFit(ProcessControlBlock PCB)
         }
         if (PCB.memory <= biggest_hole_size) // PCB can fit in biggest hole
         {
-            cout << "Starts at location: " << biggest_hole_location << " and has size " << PCB.memory;
             PCB.memory_location = biggest_hole_location;
+            cout << "Cycle " << cycle << ": Allocated memory to PCB: " << PCB.id << " Location: " << PCB.memory_location << "-" << PCB.memory_location + PCB.memory - 1 << " size: " << PCB.memory << endl;
             allocations.push_back(PCB);
             return true;
         }
@@ -110,12 +110,13 @@ bool MemoryAllocationComponent::addWorstFit(ProcessControlBlock PCB)
     }
 }
 
-void MemoryAllocationComponent::removeProcess(ProcessControlBlock PCB)
+void MemoryAllocationComponent::removeProcess(ProcessControlBlock PCB, int cycle)
 {
     for (int i = 0; i < allocations.size(); i++)
     {
         if (allocations[i].id == PCB.id)
         {
+            cout << "Cycle " << cycle << ": Removed PCB: " << PCB.id << " freeing memory: " << PCB.memory_location << "-" << PCB.memory_location + PCB.memory - 1 << endl;
             allocations.erase(allocations.begin() + i);
         }
     }

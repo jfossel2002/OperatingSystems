@@ -10,9 +10,9 @@ public:
     int space_size = 15000;
     vector<ProcessControlBlock> allocations;
     bool compact(int cycle);
-    bool addWorstFit(ProcessControlBlock PCB);
-    bool addFirstFit(ProcessControlBlock PCB);
-    void removeProcess(ProcessControlBlock PCB);
+    bool addWorstFit(ProcessControlBlock PCB, int cycle);
+    bool addFirstFit(ProcessControlBlock PCB, int cycle);
+    void removeProcess(ProcessControlBlock PCB, int cycle);
     void printAllocations();
     vector<ProcessControlBlock> getAllocations();
 };

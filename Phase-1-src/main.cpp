@@ -289,7 +289,7 @@ void runScheduler()
     string selection;
     cin >> selection;
     int selectionInt;
-    cout << "\nPlease select which memory allocation algorthim you want to use\n 1. First-Fit\n 2. Worst-Fit";
+    cout << "\nPlease select which memory allocation algorthim you want to use\n 1. First-Fit\n 2. Worst-Fit\n";
     string selection2;
     cin >> selection2;
     int selectionInt2;

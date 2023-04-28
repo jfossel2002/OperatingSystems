@@ -11,6 +11,7 @@ private:
     void makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice);
     void makeScheduleSJF(vector<ProcessControlBlock> sorted_PCBs, int choice);
     void makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice);
+    void makeScheduleRR(vector<ProcessControlBlock> sorted_PCBs, int choice);
 
 public:
     void FCFS(vector<ProcessControlBlock> PCBs, int choice); //   return schedule(?) and print start, stop, and turnaround times of each process and avg turnaround at the end
