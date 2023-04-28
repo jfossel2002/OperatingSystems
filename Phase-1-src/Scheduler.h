@@ -7,12 +7,14 @@ using namespace std;
 class Scheduler
 {
 
-private: 
-    void makeSchedule(vector<ProcessControlBlock>sorted_PCBs);
-    void makeRRSchedule(vector<ProcessControlBlock>sorted_PCBs);
+private:
+    void makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice);
+    void makeScheduleSJF(vector<ProcessControlBlock> sorted_PCBs, int choice);
+    void makeRRSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice);
+    void makeScheduleRR(vector<ProcessControlBlock> sorted_PCBs, int choice);
 
 public:
-    void FCFS(vector<ProcessControlBlock>PCBs); //   return schedule(?) and print start, stop, and turnaround times of each process and avg turnaround at the end
-    void SJF(vector<ProcessControlBlock>PCBs);  
-    void roundRobin(vector<ProcessControlBlock>PCBs); 
+    void FCFS(vector<ProcessControlBlock> PCBs, int choice); //   return schedule(?) and print start, stop, and turnaround times of each process and avg turnaround at the end
+    void SJF(vector<ProcessControlBlock> PCBs, int choice);
+    void roundRobin(vector<ProcessControlBlock> PCBs, int choice);
 };

@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#pragma once
 
 using namespace std;
 
@@ -23,11 +24,13 @@ public:
     string open_files; // TODO Change type
     int arrival_time;
     int cpu_req;
-    int quantum; 
-    int contextSwitch_penalty; 
+    int quantum;
+    int contextSwitch_penalty;
 
     int parent;
     int children;
 
     bool loadFromLine(string line);
+
+    int memory_location;
 };

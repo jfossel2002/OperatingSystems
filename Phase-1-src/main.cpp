@@ -285,13 +285,18 @@ void editProcessData(int PCBIndex)
 void runScheduler()
 {
 
-    cout << "\nPlease select which scheduler you want to run\n 1. First come first serve (FCFS)\n 2. Shortest job first(SJF)\n 3. FCFS and SJF\n 4. Round Robin\n";
+    cout << "\nPlease select which scheduler you want to run\n 1. First come first serve (FCFS)\n 2. Shortest job first(SJF)\n 3. Round Robin\n";
     string selection;
     cin >> selection;
     int selectionInt;
+    cout << "\nPlease select which memory allocation algorthim you want to use\n 1. First-Fit\n 2. Worst-Fit\n";
+    string selection2;
+    cin >> selection2;
+    int selectionInt2;
     try
     {
         selectionInt = stoi(selection);
+        selectionInt2 = stoi(selection2);
     }
     catch (...)
     {
@@ -304,22 +309,63 @@ void runScheduler()
     }
     if (selectionInt == 1)
     {
-        sched.FCFS(PCBs);
+        if (selectionInt2 == 1)
+        {
+            sched.FCFS(PCBs, 1);
+        }
+        else if (selectionInt2 == 2)
+        {
+            sched.FCFS(PCBs, 2);
+        }
+        else
+        {
+            cout << "Invalid input\npress enter to retry"
+                 << endl;
+            cin.ignore(10, '\n');
+            cin.get();
+            runScheduler();
+            return;
+        }
     }
     else if (selectionInt == 2)
     {
-        sched.SJF(PCBs);
+        if (selectionInt2 == 1)
+        {
+            sched.SJF(PCBs, 1);
+        }
+        else if (selectionInt2 == 2)
+        {
+            sched.SJF(PCBs, 2);
+        }
+        else
+        {
+            cout << "Invalid input\npress enter to retry"
+                 << endl;
+            cin.ignore(10, '\n');
+            cin.get();
+            runScheduler();
+            return;
+        }
     }
     else if (selectionInt == 3)
     {
-        cout << "First Come First Serve:\n";
-        sched.FCFS(PCBs);
-        cout << "\n Shortest Job First:\n";
-        sched.SJF(PCBs);
-    }
-    else if (selectionInt == 4)
-    {
-        sched.roundRobin(PCBs);
+        if (selectionInt2 == 1)
+        {
+            sched.roundRobin(PCBs, 1);
+        }
+        else if (selectionInt2 == 2)
+        {
+            sched.roundRobin(PCBs, 2);
+        }
+        else
+        {
+            cout << "Invalid input\npress enter to retry"
+                 << endl;
+            cin.ignore(10, '\n');
+            cin.get();
+            runScheduler();
+            return;
+        }
     }
     else
     {
