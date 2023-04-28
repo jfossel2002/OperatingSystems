@@ -32,5 +32,5 @@ public:
 
     bool loadFromLine(string line);
 
-    int memory_location;
+    int memory_location = 0;
 };

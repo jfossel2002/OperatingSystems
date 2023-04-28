@@ -13,6 +13,7 @@ MemoryAllocationComponent memoryAllocationComponent;
 // private
 void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice)
 {
+
     string finalString = "\n";
     vector<int> turnaround;
     int num_switches = 0;
@@ -65,8 +66,9 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice
                 }
             }
         }
-        for (ProcessControlBlock pcb : unallocatedPCBS)
+        for (int i = 0; i < unallocatedPCBS.size(); i++)
         {
+            ProcessControlBlock pcb = unallocatedPCBS[i];
             if (pcb.arrival_time <= clockCycle)
             {
                 if (choice == 1)
@@ -79,7 +81,13 @@ void Scheduler::makeSchedule(vector<ProcessControlBlock> sorted_PCBs, int choice
                 }
                 if (added)
                 {
-                    unallocatedPCBS.erase(unallocatedPCBS.begin());
+                    for (int i = 0; i < unallocatedPCBS.size(); i++)
+                    {
+                        if (unallocatedPCBS[i].id == pcb.id)
+                        {
+                            unallocatedPCBS.erase(unallocatedPCBS.begin() + i);
+                        }
+                    }
                 }
                 else
                 {
